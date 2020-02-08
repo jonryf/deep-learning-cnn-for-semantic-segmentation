@@ -1,3 +1,4 @@
+'''
 def iou(pred, target):
     ious = []
     for cls in range(n_class):
@@ -13,3 +14,4 @@ def iou(pred, target):
 
 def pixel_acc(pred, target):
     #Complete this function
+'''
