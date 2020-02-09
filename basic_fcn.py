@@ -26,12 +26,12 @@ class FCN(nn.Module):
         self.bn4     = nn.BatchNorm2d(64)
         self.deconv5 = nn.ConvTranspose2d(64, 32, kernel_size=3, stride=2, padding=1, dilation=1, output_padding=1)
         self.bn5     = nn.BatchNorm2d(32)
-        self.classifier = nn.Conv2d(32, 3, kernel_size=1)
+        self.classifier = nn.Conv2d(32, self.n_class, kernel_size=1)
 
     def forward(self, x):
         out_encoder = nn.Sequential(
             self.conv1,
-            self.bn1,
+            self.bnd1,
             self.relu,
             self.conv2,
             self.bnd2,
@@ -65,7 +65,7 @@ class FCN(nn.Module):
             self.bn5,
             self.relu
         )
-
+        
         encoded = out_encoder(x)
         decoded = out_decoder(encoded)
 
