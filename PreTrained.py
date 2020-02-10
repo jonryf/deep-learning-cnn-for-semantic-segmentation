@@ -9,7 +9,8 @@ for param in model_conv.parameters():
 num_ftrs = model_conv.fc.in_features
 model_conv.fc = nn.Linear(num_ftrs, 2)
 
-class FCN(nn.Module):
+
+class RESNET(nn.Module):
 
     def __init__(self, n_class):
         super().__init__()
@@ -17,7 +18,7 @@ class FCN(nn.Module):
         self.base = torchvision.models.resnet18(pretrained=True)
         for param in model_conv.parameters():
             param.requires_grad = False
-        num_ftrs = self.fc.in_features
+        num_ftrs = self.base.fc.in_features
         self.fc = nn.Linear(num_ftrs, 512)
         self.bnd1 = nn.BatchNorm2d(512)
         self.relu = nn.ReLU(inplace=True)
