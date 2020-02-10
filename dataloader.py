@@ -86,6 +86,7 @@ class CityScapesDataset(Dataset):
         self.means     = means
         self.n_class   = n_class
         # Add any transformations here
+        self.transforms = transforms
 
     def __len__(self):
         return len(self.data)
@@ -104,14 +105,23 @@ class CityScapesDataset(Dataset):
         img[1] -= self.means[1]
         img[2] -= self.means[2]
 
+
         # convert to tensor
         img = torch.from_numpy(img.copy()).float()
         label = torch.from_numpy(label.copy()).long()
+
+        # apply transformation
+        if self.transforms:
+            img = self.transforms(img)
+            label = self.transforms(label)
 
         # create one-hot encoding
         h, w = label.shape
         target = torch.zeros(self.n_class, h, w)
         for c in range(self.n_class):
             target[c][label == c] = 1
+
+
+
 
         return img, target, label
