@@ -1,4 +1,4 @@
-from main import FCN, ModelRunner
+from runner import FCN, ModelRunner
 import torch
 import torch.nn as nn
 

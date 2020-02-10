@@ -1,4 +1,3 @@
-from basic_fcn import *
 from dataloader import *
 from utils import *
 from dataloader import DataLoader
@@ -105,10 +104,3 @@ class ModelRunner:
         else:
             multi_plots([self.model, compare_to.model], names)
 
-
-if __name__ == "__main__":
-    pass
-    # val(0)  # show the accuracy before training
-    # train()
-
-# %%
