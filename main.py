@@ -6,24 +6,11 @@ import torch.nn.modules.loss as loss
 import torch.optim as optim
 import time
 
-SETTINGS = {
-    'BASELINE': {
-        'APPLY_TRANSFORMATIONS': False,
-        'MODEL': FCN,
-        'EPOCHS': 10
-    },
-    'COMPARE_TO': {
-        'APPLY_TRANSFORMATIONS': True,
-        'MODEL': FCN,
-        'EPOCHS': 10
-
-    }
-}
-
 
 class ModelRunner:
     def __init__(self, settings):
         self.settings = settings
+        self.model_name = settings['model'].__class__.__name__
         self.transforms = get_transformations() if settings['APPLY_TRANSFORMATIONS'] else None
         self.train_loader = None
         self.val_loader = None
@@ -61,6 +48,12 @@ class ModelRunner:
     def train(self):
         self.model.train()
 
+        # log data to these variables
+        self.model.training_loss = []
+        self.model.validation_loss = []
+        self.model.training_acc = []
+        self.model.validation_acc = []
+
         for epoch in range(self.settings['EPOCHS']):
             ts = time.time()
             print(epoch)
@@ -74,16 +67,20 @@ class ModelRunner:
                 print("Getting outputs")
                 outputs = self.model(inputs)
                 loss = self.criterion(outputs, labels)
-
                 loss.backward()
                 self.optimizer.step()
+
+                self.model.training_loss.append(loss)
+
                 if iter > 20:
                     break
                 if iter % 10 == 0:
                     print("epoch{}, iter{}, loss: {}".format(epoch, iter, loss.item()))
 
             print("Finish epoch {}, time elapsed {}".format(epoch, time.time() - ts))
-            torch.save(self.model, 'best_model')
+            print("Saving model")
+
+            torch.save(self.model_name, self.model)
 
             self.val(epoch)
 
@@ -98,8 +95,11 @@ class ModelRunner:
         # Complete this function - Calculate accuracy and IoU
         # Make sure to include a softmax after the output from your model
 
-    def plot(self, display=True):
-        pass
+    def plot(self, compare_to=None, names=None):
+        if compare_to is None:
+            plot(self.model)
+        else:
+            multi_plots([self.model, compare_to.model], names)
 
 
 if __name__ == "__main__":
@@ -108,5 +108,3 @@ if __name__ == "__main__":
     # train()
 
 # %%
-
-

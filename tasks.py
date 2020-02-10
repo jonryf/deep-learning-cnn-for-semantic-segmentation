@@ -10,6 +10,7 @@ def task2():
 
     runner = ModelRunner(settings)
     runner.train()
+    # runner.val()
     runner.plot()
 
 
@@ -31,4 +32,4 @@ def task3_1():
     task_model = ModelRunner(settings_task3_1)
 
     # combine two plots
-    task_model.plot(baseline_runner)
+    task_model.plot(baseline_runner, names=["Baseline", "Model with transformations"])
