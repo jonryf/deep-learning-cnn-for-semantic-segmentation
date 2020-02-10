@@ -10,14 +10,15 @@ import time
 class ModelRunner:
     def __init__(self, settings):
         self.settings = settings
-        self.model_name = settings['model'].__class__.__name__
+        print(settings)
+        self.model_name = settings['MODEL'].__class__.__name__
         self.transforms = get_transformations() if settings['APPLY_TRANSFORMATIONS'] else None
         self.train_loader = None
         self.val_loader = None
         self.test_loader = None
 
         self.criterion = loss.CrossEntropyLoss()
-        self.model = settings['model'](n_class=n_class)
+        self.model = settings['MODEL'](n_class=n_class)
         self.model.apply(init_weights)
         self.optimizer = optim.Adam(self.model.parameters(), lr=5e-3)
 
@@ -27,10 +28,12 @@ class ModelRunner:
         else:
             self.computing_device = torch.device('cpu')
 
+        self.load_data()
+
     def load_data(self):
-        train_dataset = CityScapesDataset(csv_file='train.csv', transforms=transforms)
-        val_dataset = CityScapesDataset(csv_file='val.csv', transforms=transforms)
-        test_dataset = CityScapesDataset(csv_file='test.csv', transforms=transforms)
+        train_dataset = CityScapesDataset('train.csv', self.transforms)
+        val_dataset = CityScapesDataset('val.csv', self.transforms)
+        test_dataset = CityScapesDataset('test.csv', self.transforms)
 
         self.train_loader = DataLoader(dataset=train_dataset,
                                        batch_size=1,
@@ -44,6 +47,7 @@ class ModelRunner:
                                       batch_size=1,
                                       num_workers=1,
                                       shuffle=True)
+
 
     def train(self):
         self.model.train()

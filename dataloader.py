@@ -81,12 +81,12 @@ labels_classes = [
 
 class CityScapesDataset(Dataset):
 
-    def __init__(self, csv_file, n_class=n_class, transforms=None):
+    def __init__(self, csv_file, transform, n_class=n_class):
         self.data      = pd.read_csv(csv_file)
         self.means     = means
         self.n_class   = n_class
         # Add any transformations here
-        self.transforms = transforms
+        self.transform = transform
 
     def __len__(self):
         return len(self.data)
@@ -111,9 +111,9 @@ class CityScapesDataset(Dataset):
         label = torch.from_numpy(label.copy()).long()
 
         # apply transformation
-        if self.transforms:
-            img = self.transforms(img)
-            label = self.transforms(label)
+        if self.transform is not None:
+            img = self.transform(img)
+            label = self.transform(label)
 
         # create one-hot encoding
         h, w = label.shape
