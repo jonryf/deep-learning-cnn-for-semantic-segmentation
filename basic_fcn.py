@@ -65,10 +65,5 @@ class FCN(nn.Module):
             self.bn5,
             self.relu
         )
-        
-        encoded = out_encoder(x)
-        decoded = out_decoder(encoded)
 
-        score = self.classifier(decoded)
-
-        return score  # size=(N, n_class, x.H/1, x.W/1)
+        return self.classifier(out_decoder(out_encoder(x)))  # size=(N, n_class, x.H/1, x.W/1)
