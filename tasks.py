@@ -1,4 +1,5 @@
-from runner import FCN, ModelRunner
+from runner import ModelRunner
+from basic_fcn import FCN
 import torch
 import torch.nn as nn
 
@@ -6,11 +7,12 @@ import torch.nn as nn
 def task2():
     settings = {
         'APPLY_TRANSFORMATIONS': False,
-        'MODEL': FCN,
-        'EPOCHS': 10
+        'model': FCN,
+        'EPOCHS': 100
     }
-
+    print("Training FCN on", settings['EPOCHS'], "Epochs")
     runner = ModelRunner(settings)
+    runner.load_data()
     runner.train()
     # runner.val()
     runner.plot()
@@ -60,3 +62,6 @@ def task_3_3():
 
     # combine two plots
     task_model.plot(baseline_runner, names=["Baseline", "Model with transformations"])
+
+if __name__ == "__main__":
+    task2()

@@ -1,0 +1,4 @@
+How to run on cluster:
+1. Ssh into cluster: ssh <username>@ieng6.ucsd.edu
+2. Create pod: cs253wi20 & launch-scipy-ml-gpu.sh -g 1 -b
+3. 

@@ -105,7 +105,7 @@ def plot_acc(model, title, show=True):
 
 def plot(model, title=""):
     plot_loss(model, title, show=True)
-    plot_acc(model, title, show=True)
+    #plot_acc(model, title, show=True)
 
 
 def multi_plots(models, names):
