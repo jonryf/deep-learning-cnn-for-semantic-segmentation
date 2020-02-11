@@ -3,9 +3,10 @@ from basic_fcn import FCN
 from unet import UNET
 import torch
 import torch.nn as nn
+import sys
 
 
-def task2():
+def task2(title=None):
     settings = {
         'APPLY_TRANSFORMATIONS': False,
         'model': FCN,
@@ -16,7 +17,7 @@ def task2():
     runner.load_data()
     runner.train()
     # runner.val()
-    runner.plot()
+    runner.plot(title=title)
 
 
 def task3_1():
@@ -79,4 +80,4 @@ def task_unet():
 
 
 if __name__ == "__main__":
-    task2()
+    task2(title=sys.argv[1])

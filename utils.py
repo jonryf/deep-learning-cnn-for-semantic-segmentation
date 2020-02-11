@@ -91,6 +91,7 @@ def graph_plot(data, labels, legends, title, show=True):
     plt.xlabel(labels[0])
     plt.ylabel(labels[1])
     plt.legend(legends)
+    plt.savefig('{}.png'.format(title))
     if show:
         plt.show()
 

@@ -99,7 +99,7 @@ class ModelRunner:
                 labels = Y.cuda()
     #             print(torch.cuda.memory_allocated(device=None))
                 outputs = self.model(inputs)
-                lossSum += self.criterion(outputs, labels).data.item()
+            #     lossSum += self.criterion(outputs, labels).data.item()
             # if iter > 1:
             #     break
         print("Validation Epoch:", epoch, ", Loss: ", lossSum)
@@ -112,9 +112,9 @@ class ModelRunner:
         # Complete this function - Calculate accuracy and IoU
         # Make sure to include a softmax after the output from your model
 
-    def plot(self, compare_to=None, names=None):
+    def plot(self, compare_to=None, names=None, title=None):
         if compare_to is None:
-            plot(self.model)
+            plot(self.model, title=title)
         else:
             multi_plots([self.model, compare_to.model], names)
 
