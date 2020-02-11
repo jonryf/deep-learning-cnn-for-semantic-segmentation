@@ -1,9 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[37]:
-
-
+# To add a new cell, type '# %%'
+# To add a new markdown cell, type '# %% [markdown]'
+# %%
 from torchvision import utils
 from basic_fcn import *
 from dataloader import *
@@ -16,14 +13,12 @@ from torch.autograd import Variable
 import time
 
 
-# In[38]:
-
-
+# %%
 train_dataset = CityScapesDataset(csv_file='train.csv')
 val_dataset = CityScapesDataset(csv_file='val.csv')
 test_dataset = CityScapesDataset(csv_file='test.csv')
 train_loader = DataLoader(dataset=train_dataset,
-                          batch_size=1,
+                          batch_size=10,
                           num_workers=1,
                           shuffle=True)
 val_loader = DataLoader(dataset=val_dataset,
@@ -36,9 +31,7 @@ test_loader = DataLoader(dataset=test_dataset,
                           shuffle=True)
 
 
-# In[39]:
-
-
+# %%
 def init_weights(m):
     if isinstance(m, nn.Conv2d) or isinstance(m, nn.ConvTranspose2d):
         torch.nn.init.xavier_uniform_(m.weight.data)
@@ -54,9 +47,7 @@ fcn_model.apply(init_weights)
 optimizer = optim.Adam(fcn_model.parameters(), lr=5e-3)
 
 
-# In[36]:
-
-
+# %%
 use_gpu = torch.cuda.is_available()
 if use_gpu:
     fcn_model = fcn_model.cuda()
@@ -77,7 +68,6 @@ def train():
             labels = Y.cuda()
             #labels = Y.to(computing_device)
 
-            print("Getting outputs")
             outputs = fcn_model(inputs)
             loss = criterion(outputs, labels)
             
@@ -98,6 +88,15 @@ def train():
 def val(epoch):
     print("Val")
     fcn_model.eval()
+    vals = val_loader
+    lossSum = 0
+    for iter, (X, tar, Y) in enumerate(train_loader):
+        inputs = X.cuda()
+        labels = Y.cuda()
+        
+        outputs = fcn_model(inputs)
+        loss = criterion(outputs, labels)
+        print(loss)
     #Complete this function - Calculate loss, accuracy and IoU for every epoch
     # Make sure to include a softmax after the output from your model
     
@@ -107,12 +106,11 @@ def test():
     # Make sure to include a softmax after the output from your model
     
 if __name__ == "__main__":
-    val(0)  # show the accuracy before training
+#     val(0)  # show the accuracy before training
     train()
 
 
-# In[ ]:
-
+# %%
 
 
 
