@@ -4,6 +4,9 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 import numpy as np
 
+def getClassFromChannels(preds):
+    return torch.argmax(preds, axis=1)
+
 '''
 def iou(pred, target):
     ious = []
@@ -16,11 +19,17 @@ def iou(pred, target):
         else:
             # Append the calculated IoU to the list ious
     return ious
-
-
-def pixel_acc(pred, target):
-    #Complete this function
 '''
+
+# pred - pred(images, height, width) = prediction class
+# target - target(images, height, width) = target class
+# returns - (images, percentCorrect)
+def pixel_acc(pred, target):
+    diff = pred - target
+    correct = torch.where(diff == 0, 1, 0)
+    s = torch.sum(correct, axis=1)
+    s = torch.sum(s, axis=1)
+    return s.type(torch.DoubleTensor)/ float(pred.size()[1] * pred.size()[2])
 
 
 def init_weights(model):
