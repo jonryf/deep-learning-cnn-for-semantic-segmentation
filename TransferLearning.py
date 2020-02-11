@@ -36,28 +36,19 @@ test_loader = DataLoader(dataset=test_dataset,
 
 
 # In[39]:
-
-
-def init_weights(m):
-    if isinstance(m, nn.Conv2d) or isinstance(m, nn.ConvTranspose2d):
-        torch.nn.init.xavier_uniform_(m.weight.data)
-        torch.nn.init.zeros_(m.bias.data)
-        # torch.nn.init.xavier_uniform_(m.bias.data)
-
-
 epochs = 2
 # criterion = # Choose an appropriate loss function from https://pytorch.org/docs/stable/_modules/torch/nn/modules/loss.html
 criterion = loss.CrossEntropyLoss()
-fcn_model = RESNET(n_class=n_class)
+resnet_model = RESNET(n_class=n_class)
 # fcn_model.apply(init_weights)
 # fcn_model = torch.load('best_model')
-optimizer = optim.Adam(fcn_model.parameters(), lr=5e-3)
+optimizer = optim.Adam(resnet_model.parameters(), lr=5e-3)
 
 # In[36]:
 
 use_gpu = torch.cuda.is_available()
 if use_gpu:
-    fcn_model = fcn_model.cuda()
+    fcn_model = resnet_model.cuda()
     computing_device = torch.device('cuda')
 else:
     computing_device = torch.device('cuda')
@@ -76,28 +67,28 @@ def train():
             # labels = Y.to(computing_device)
 
             print("Getting outputs")
-            outputs = fcn_model(inputs)
+            outputs = resnet_model(inputs)
             loss = criterion(outputs, labels)
 
             loss.backward()
             optimizer.step()
 
             #EARLY STOP TESTING CONDITION
-            if iter > 20:
+            if iter > 5:
                 break
             if iter % 10 == 0:
                 print("epoch{}, iter{}, loss: {}".format(epoch, iter, loss.item()))
 
         print("Finish epoch {}, time elapsed {}".format(epoch, time.time() - ts))
-        torch.save(fcn_model, 'best_model')
+        #torch.save(resnet_model, 'best_model')
 
         #val(epoch)
-        fcn_model.train()
+        resnet_model.train()
 
 
 def val(epoch):
     print("Val")
-    fcn_model.eval()
+    resnet_model.eval()
     # Complete this function - Calculate loss, accuracy and IoU for every epoch
     # Make sure to include a softmax after the output from your model
 

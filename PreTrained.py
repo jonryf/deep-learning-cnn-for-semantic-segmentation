@@ -1,28 +1,21 @@
 import torch.nn as nn
 import torchvision
 
-model_conv = torchvision.models.resnet18(pretrained=True)
-for param in model_conv.parameters():
-    param.requires_grad = False
-
-# Parameters of newly constructed modules have requires_grad=True by default
-num_ftrs = model_conv.fc.in_features
-model_conv.fc = nn.Linear(num_ftrs, 2)
-
 
 class RESNET(nn.Module):
 
     def __init__(self, n_class):
         super().__init__()
-        self.n_class = n_class
-        self.base = torchvision.models.resnet18(pretrained=True)
-        for param in model_conv.parameters():
+        #input
+        self.mod = torchvision.models.resnet34(pretrained=True)
+        for param in self.mod.parameters():
             param.requires_grad = False
-        num_ftrs = self.base.fc.in_features
-        self.fc = nn.Linear(num_ftrs, 512)
+        self.n_class = n_class
+        self.fc = nn.Linear(1000, 512)
         self.bnd1 = nn.BatchNorm2d(512)
         self.relu = nn.ReLU(inplace=True)
 
+        #output
         self.deconv1 = nn.ConvTranspose2d(512, 512, kernel_size=3, stride=2, padding=1, dilation=1, output_padding=1)
         self.bn1 = nn.BatchNorm2d(512)
         self.deconv2 = nn.ConvTranspose2d(512, 256, kernel_size=3, stride=2, padding=1, dilation=1, output_padding=1)
@@ -37,9 +30,10 @@ class RESNET(nn.Module):
 
     def forward(self, x):
         out_encoder = nn.Sequential(
-            self.base,
+            #self.mod,
             self.fc,
-            self.relu,
+            self.bnd1,
+            self.relu
 
         )
 
