@@ -6,8 +6,26 @@ class RESNET(nn.Module):
 
     def __init__(self, n_class):
         super().__init__()
-        #input
-        self.mod = torchvision.models.resnet34(pretrained=True)
+        # VGG11 output architecture:
+        # conv3-64-1
+        # max 2x2-2
+        # conv3-128-1
+        # max 2x2-2
+        # conv3-256-1
+        # conv3-256-1
+        # max 2x2-2
+        # conv3-512-1
+        # conv3-512-1
+        # max 2x2-2
+        # conv3-512-1
+        # conv3-512-1
+        # max 2x2-2
+        # FC-4096
+        # FC-4096
+        # FC-1000
+        # soft-max
+        self.mod = torchvision.models.vgg11(pretrained=True)
+        # freeze pre-trained layers
         for param in self.mod.parameters():
             param.requires_grad = False
         self.n_class = n_class
@@ -15,7 +33,7 @@ class RESNET(nn.Module):
         self.bnd1 = nn.BatchNorm2d(512)
         self.relu = nn.ReLU(inplace=True)
 
-        #output
+        # output
         self.deconv1 = nn.ConvTranspose2d(512, 512, kernel_size=3, stride=2, padding=1, dilation=1, output_padding=1)
         self.bn1 = nn.BatchNorm2d(512)
         self.deconv2 = nn.ConvTranspose2d(512, 256, kernel_size=3, stride=2, padding=1, dilation=1, output_padding=1)
@@ -30,7 +48,7 @@ class RESNET(nn.Module):
 
     def forward(self, x):
         out_encoder = nn.Sequential(
-            #self.mod,
+            self.mod,
             self.fc,
             self.bnd1,
             self.relu

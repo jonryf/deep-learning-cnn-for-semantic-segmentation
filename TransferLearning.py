@@ -5,7 +5,7 @@
 
 
 from torchvision import utils
-from PreTrained import *
+from vgg11 import *
 from dataloader import *
 from utils import *
 import torchvision
