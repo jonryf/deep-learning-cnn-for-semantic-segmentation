@@ -2,7 +2,7 @@ import torch.nn as nn
 import torchvision
 
 
-class RESNET(nn.Module):
+class VGG(nn.Module):
 
     def __init__(self, n_class):
         super().__init__()

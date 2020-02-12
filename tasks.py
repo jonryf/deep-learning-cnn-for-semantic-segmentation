@@ -1,5 +1,6 @@
 from runner import ModelRunner
 from basic_fcn import FCN
+from vgg11 import VGG
 from unet import UNET
 import torch
 import torch.nn as nn
@@ -69,6 +70,26 @@ def task_3_3():
 
     # combine two plots
     task_model.plot(baseline_runner, names=["Baseline", "Model with transformations"])
+
+def task_3_4():
+    settings_baseline = {
+        'APPLY_TRANSFORMATIONS': False,
+        'MODEL': FCN,
+        'EPOCHS': 10,
+        'batch_size': 4,
+        'LOAD_FROM_PATH': 'baseline_model.model'
+    }
+    settings_task3_4 = {
+        'APPLY_TRANSFORMATIONS': False,
+        'MODEL': VGG,
+        'batch_size': 4,
+        'EPOCHS': 10
+    }
+
+    baseline_runner = ModelRunner(settings_baseline)
+    task_model = ModelRunner(settings_task3_4)
+
+    task_model.plot(baseline_runner, names=["Baseline", "VGG 11"])
 
 def task_unet(title=None):
     settings = {
