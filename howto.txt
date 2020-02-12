@@ -27,5 +27,8 @@ $ kubectl cp ./ <username>-<pod number>:/tmp/code
 Run tasks from pod:
 $ python /tmp/code/tasks.py <save name for graphs>
 
+Sometimes the copy to the pod does not override the code just run:
+$ rm -rf /tmp/code
+
 
 
