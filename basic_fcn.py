@@ -1,4 +1,5 @@
 import torch.nn as nn
+import torch
 
 class FCN(nn.Module):
 
@@ -66,5 +67,6 @@ class FCN(nn.Module):
             self.bn5,
             self.relu
         )
+        torch.cuda.empty_cache()
 
         return self.classifier(out_decoder(out_encoder(x)))  # size=(N, n_class, x.H/1, x.W/1)

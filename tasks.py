@@ -122,4 +122,4 @@ def test_task(title="TestRun"):
     runner.plot(title=title)
 
 if __name__ == "__main__":
-    task2(title=sys.argv[1])
+    test_task(title=sys.argv[1])
