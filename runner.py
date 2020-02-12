@@ -14,6 +14,7 @@ class ModelRunner:
         self.train_loader = None
         self.val_loader = None
         self.test_loader = None
+        self.batch_size = settings['batch_size']
 
         self.criterion = loss.CrossEntropyLoss()
         self.model = settings['model'](n_class=n_class)
@@ -36,15 +37,15 @@ class ModelRunner:
         test_dataset = CityScapesDataset('test.csv', self.transforms)
 
         self.train_loader = DataLoader(dataset=train_dataset,
-                                       batch_size=4,
+                                       batch_size=self.batch_size,
                                        num_workers=4,
                                        shuffle=True)
         self.val_loader = DataLoader(dataset=val_dataset,
-                                     batch_size=4,
+                                     batch_size=self.batch_size,
                                      num_workers=4,
                                      shuffle=True)
         self.test_loader = DataLoader(dataset=test_dataset,
-                                      batch_size=4,
+                                      batch_size=self.batch_size,
                                       num_workers=4,
                                       shuffle=True)
 
@@ -99,7 +100,7 @@ class ModelRunner:
                 labels = Y.cuda()
     #             print(torch.cuda.memory_allocated(device=None))
                 outputs = self.model(inputs)
-            #     lossSum += self.criterion(outputs, labels).data.item()
+                lossSum += self.criterion(outputs, labels).data.item()
             # if iter > 1:
             #     break
         print("Validation Epoch:", epoch, ", Loss: ", lossSum)
