@@ -10,7 +10,7 @@ def task2(title=None):
     settings = {
         'APPLY_TRANSFORMATIONS': False,
         'model': FCN,
-        'EPOCHS': 100,
+        'EPOCHS': 50,
         'batch_size': 4
     }
     print("Training FCN on", settings['EPOCHS'], "Epochs")
@@ -75,7 +75,8 @@ def task_unet(title=None):
         'APPLY_TRANSFORMATIONS': False,
         'model': UNET,
         'EPOCHS': 50,
-        'batch_size': 1
+        'batch_size': 1,
+        'imagesPerEpoch': 1
     }
     print("Training UNET on", settings['EPOCHS'], "Epochs")
     runner = ModelRunner(settings)
@@ -84,6 +85,20 @@ def task_unet(title=None):
     # runner.val()
     runner.plot(title=title)
 
+def test_task(title="TestRun"):
+    settings = {
+        'APPLY_TRANSFORMATIONS': False,
+        'model': FCN,
+        'EPOCHS': 8,
+        'batch_size': 4,
+        'imagesPerEpoch': 20
+    }
+    print("Training FCN on", settings['EPOCHS'], "Epochs")
+    runner = ModelRunner(settings)
+    runner.load_data()
+    runner.train()
+    # runner.val()
+    runner.plot(title=title)
 
 if __name__ == "__main__":
     task2(title=sys.argv[1])

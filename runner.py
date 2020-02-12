@@ -14,6 +14,7 @@ class ModelRunner:
         self.train_loader = None
         self.val_loader = None
         self.test_loader = None
+        self.bestValidationLoss = None
         self.batch_size = settings['batch_size']
 
         self.criterion = loss.CrossEntropyLoss()
@@ -55,13 +56,24 @@ class ModelRunner:
 
         # log data to these variables
         self.model.training_loss = []
+        self.model.training_acc = []
+        self.model.validation_acc = []
         self.model.validation_loss = []
 
         for epoch in range(self.settings['EPOCHS']):
             ts = time.time()
             lossSum = 0
+            accuracySum = 0
+            totalImage = 0
             for iter, (X, tar, Y) in enumerate(self.train_loader):
+
+                
                 self.optimizer.zero_grad()
+
+                if(self.settings['imagesPerEpoch']):
+                    if iter*self.batch_size > self.settings['imagesPerEpoch']:
+                        break
+                
 
                 #inputs = X.to(computing_device)
                 inputs = X.cuda()
@@ -69,24 +81,38 @@ class ModelRunner:
                 #labels = Y.to(computing_device)
 
                 outputs = self.model(inputs)
+
                 loss = self.criterion(outputs, labels)
                 lossSum += loss.data
+                accuracies = pixel_acc(outputs, labels)
+                
+                accuracySum += torch.sum(accuracies)/self.batch_size
+                
+
+                torch.cuda.empty_cache()
+                
                 loss.backward()
                 self.optimizer.step()
 
+                
 
-                # if iter > 1:
-                #     break
+                totalImage += 1
+
                 if iter % 100 == 0:
                     None
                     print("Iter", iter, "Done")
                     #print("epoch{}, iter{}, loss: {}".format(epoch, iter, loss.item()))
             self.model.training_loss.append(lossSum)
+            accuracy = accuracySum / totalImage
+            if accuracy is None:
+                accuracy = torch.tensor([0.0])
+            self.model.training_acc.append(accuracy.item())
+            print(totalImage*self.batch_size)
             print("-------------------------------------")
-            print("Train epoch {}, time elapsed {}, loss {}".format(epoch, time.time() - ts, lossSum))
-            print("Saving model")
+            print("Train epoch {}, time elapsed {}, loss {}, accuracy: {}".format(epoch, time.time() - ts, lossSum, accuracy.item()))
+            print("Saving most recent model")
 
-            torch.save(self.model, self.model_name)
+            torch.save(self.model, '{}lastEpochModel'.format(self.model_name))
 
             self.val(epoch)
 
@@ -94,17 +120,31 @@ class ModelRunner:
         self.model.eval()
         vals = self.val_loader
         lossSum = 0
+        accuracySum = 0
+        totalImage=0
         for iter, (X, tar, Y) in enumerate(vals):
+            if self.settings['imagesPerEpoch']:
+                if iter * self.batch_size > self.settings['imagesPerEpoch']:
+                    break
             with torch.no_grad():
                 inputs = X.cuda()
                 labels = Y.cuda()
     #             print(torch.cuda.memory_allocated(device=None))
+                totalImage += 1
                 outputs = self.model(inputs)
                 lossSum += self.criterion(outputs, labels).data.item()
-            # if iter > 1:
-            #     break
-        print("Validation Epoch:", epoch, ", Loss: ", lossSum)
+                accuracySum += torch.sum(pixel_acc(outputs, labels))/self.batch_size
+            
+        accuracy = accuracySum / totalImage
+        if accuracy is None:
+            accuracy = torch.tensor([0.0])
+        print("Validation Epoch: {}, Loss: {}, Accuracy: {}".format(epoch, lossSum, accuracy.item()))
+        if self.bestValidationLoss is None or lossSum < self.bestValidationLoss:
+            print("Saving best model")
+            self.bestValidationLoss = lossSum
+            torch.save(self.model, '{}bestModel'.format(self.model_name))
         self.model.validation_loss.append(lossSum)
+        self.model.validation_acc.append(accuracy.item())
         # Complete this function - Calculate loss, accuracy and IoU for every epoch
         # Make sure to include a softmax after the output from your model
 

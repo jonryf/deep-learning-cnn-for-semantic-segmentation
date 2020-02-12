@@ -26,12 +26,14 @@ def iou(pred, target):
 # returns - (images) = pecent
 def pixel_acc(pred, target):
     classPreds = getClassFromChannels(pred)
-    classTarget = getClassFromChannels(target)
+    classTarget = target#getClassFromChannels(target)
     diff = classPreds - classTarget
-    correct = torch.where(diff == 0, 1, 0)
+    x = torch.tensor([1]).cuda()
+    y = torch.tensor([0]).cuda()
+    correct = torch.where(diff == 0, x, y)
     s = torch.sum(correct, axis=1)
     s = torch.sum(s, axis=1)
-    return s.float() / float(pred.size()[1] * pred.size()[2])
+    return s.float() / float(pred.size()[2] * pred.size()[3])
 
 
 def init_weights(model):
@@ -105,19 +107,21 @@ def plot_loss(model, title, show=True):
     @param model: trained model to plot
     """
     # plot the loss
+    plt.clf()
     graph_plot([model.training_loss, model.validation_loss],
-               ["Epoch", "Cross-entropy loss"], ["Training loss", "Validation loss"], title, show)
+               ["Epoch", "Cross-entropy loss"], ["Training loss", "Validation loss"], title + 'loss', show)
 
 
 def plot_acc(model, title, show=True):
     # plot the accuracy
+    plt.clf()
     graph_plot([model.training_acc, model.validation_acc],
-               ["Epoch", "Accuracy"], ["Training accuracy", "Validation accuracy"], title, show)
+               ["Epoch", "Accuracy"], ["Training accuracy", "Validation accuracy"], title + 'acc', show)
 
 
 def plot(model, title=""):
     plot_loss(model, title, show=True)
-    #plot_acc(model, title, show=True)
+    plot_acc(model, title, show=True)
 
 
 def multi_plots(models, names):
