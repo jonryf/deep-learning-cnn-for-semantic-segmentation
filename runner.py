@@ -83,7 +83,9 @@ class ModelRunner:
                 outputs = self.model(inputs)
 
                 loss = self.criterion(outputs, labels)
+
                 lossSum += loss.data
+
                 accuracies = pixel_acc(outputs, labels)
 
                 accuracySum += torch.sum(accuracies)/self.batch_size
@@ -134,6 +136,7 @@ class ModelRunner:
                 outputs = self.model(inputs)
                 lossSum += self.criterion(outputs, labels).data.item()
                 accuracySum += torch.sum(pixel_acc(outputs, labels))/self.batch_size
+                torch.cuda.empty_cache()
             
         accuracy = accuracySum / totalImage
         if accuracy is None:

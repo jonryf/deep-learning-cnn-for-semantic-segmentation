@@ -55,10 +55,10 @@ def iou(pred, target):
 # returns - (images) = pecent
 def pixel_acc(pred, target):
     classPreds = getClassFromChannels(pred)
-    classTarget = target#getClassFromChannels(target)
+    classTarget = target #getClassFromChannels(target)
     diff = classPreds - classTarget
-    x = torch.tensor([1]).cuda()
-    y = torch.tensor([0]).cuda()
+    x = torch.tensor(1).cuda()
+    y = torch.tensor(0).cuda()
     correct = torch.where(diff == 0, x, y)
     s = torch.sum(correct, axis=1)
     s = torch.sum(s, axis=1)
