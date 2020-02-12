@@ -14,6 +14,7 @@ class ModelRunner:
         self.train_loader = None
         self.val_loader = None
         self.test_loader = None
+        self.batch_size = settings['batch_size']
 
         self.criterion = loss.CrossEntropyLoss()
         self.model = settings['model'](n_class=n_class)
@@ -36,15 +37,15 @@ class ModelRunner:
         test_dataset = CityScapesDataset('test.csv', self.transforms)
 
         self.train_loader = DataLoader(dataset=train_dataset,
-                                       batch_size=4,
+                                       batch_size=self.batch_size,
                                        num_workers=4,
                                        shuffle=True)
         self.val_loader = DataLoader(dataset=val_dataset,
-                                     batch_size=4,
+                                     batch_size=self.batch_size,
                                      num_workers=4,
                                      shuffle=True)
         self.test_loader = DataLoader(dataset=test_dataset,
-                                      batch_size=4,
+                                      batch_size=self.batch_size,
                                       num_workers=4,
                                       shuffle=True)
 
@@ -112,9 +113,9 @@ class ModelRunner:
         # Complete this function - Calculate accuracy and IoU
         # Make sure to include a softmax after the output from your model
 
-    def plot(self, compare_to=None, names=None):
+    def plot(self, compare_to=None, names=None, title=None):
         if compare_to is None:
-            plot(self.model)
+            plot(self.model, title=title)
         else:
             multi_plots([self.model, compare_to.model], names)
 

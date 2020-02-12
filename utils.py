@@ -21,15 +21,17 @@ def iou(pred, target):
     return ious
 '''
 
-# pred - pred(images, height, width) = prediction class
-# target - target(images, height, width) = target class
-# returns - (images, percentCorrect)
+# pred - pred(images, classes, height, width) = prediction class
+# target - target(images, classes, height, width) = target class
+# returns - (images) = pecent
 def pixel_acc(pred, target):
-    diff = pred - target
+    classPreds = getClassFromChannels(pred)
+    classTarget = getClassFromChannels(target)
+    diff = classPreds - classTarget
     correct = torch.where(diff == 0, 1, 0)
     s = torch.sum(correct, axis=1)
     s = torch.sum(s, axis=1)
-    return s.type(torch.DoubleTensor)/ float(pred.size()[1] * pred.size()[2])
+    return s.float() / float(pred.size()[1] * pred.size()[2])
 
 
 def init_weights(model):
@@ -91,6 +93,7 @@ def graph_plot(data, labels, legends, title, show=True):
     plt.xlabel(labels[0])
     plt.ylabel(labels[1])
     plt.legend(legends)
+    plt.savefig('{}.png'.format(title))
     if show:
         plt.show()
 

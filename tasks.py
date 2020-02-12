@@ -3,20 +3,22 @@ from basic_fcn import FCN
 from unet import UNET
 import torch
 import torch.nn as nn
+import sys
 
 
-def task2():
+def task2(title=None):
     settings = {
         'APPLY_TRANSFORMATIONS': False,
         'model': FCN,
-        'EPOCHS': 100
+        'EPOCHS': 100,
+        'batch_size': 4
     }
     print("Training FCN on", settings['EPOCHS'], "Epochs")
     runner = ModelRunner(settings)
     runner.load_data()
     runner.train()
     # runner.val()
-    runner.plot()
+    runner.plot(title=title)
 
 
 def task3_1():
@@ -24,12 +26,14 @@ def task3_1():
         'APPLY_TRANSFORMATIONS': False,
         'MODEL': FCN,
         'EPOCHS': 10,
+        'batch_size': 4,
         'LOAD_FROM_PATH': 'baseline_model.model'
     }
 
     settings_task3_1 = {
         'APPLY_TRANSFORMATIONS': True,
         'MODEL': FCN,
+        'batch_size': 4,
         'EPOCHS': 10
     }
 
@@ -45,12 +49,14 @@ def task_3_3():
         'APPLY_TRANSFORMATIONS': False,
         'MODEL': FCN,
         'EPOCHS': 10,
+        'batch_size': 4,
         'LOAD_FROM_PATH': 'baseline_model.model'
     }
 
     settings_task3_1 = {
         'APPLY_TRANSFORMATIONS': True,
         'MODEL': FCN,
+        'batch_size': 4,
         'EPOCHS': 10
     }
 
@@ -64,19 +70,20 @@ def task_3_3():
     # combine two plots
     task_model.plot(baseline_runner, names=["Baseline", "Model with transformations"])
 
-def task_unet():
+def task_unet(title=None):
     settings = {
         'APPLY_TRANSFORMATIONS': False,
         'model': UNET,
-        'EPOCHS': 100
+        'EPOCHS': 50,
+        'batch_size': 1
     }
     print("Training UNET on", settings['EPOCHS'], "Epochs")
     runner = ModelRunner(settings)
     runner.load_data()
     runner.train()
     # runner.val()
-    runner.plot()
+    runner.plot(title=title)
 
 
 if __name__ == "__main__":
-    task2()
+    task2(title=sys.argv[1])
