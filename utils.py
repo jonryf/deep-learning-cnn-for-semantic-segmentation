@@ -4,22 +4,51 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 import numpy as np
 
+#size (images, features, height, width)
+def getOneHotPredictionsFromProbabilites(preds):
+    ret = torch.zeros(preds.size())
+    maxPreds = torch.argmax(preds, axis=1) # dimmensinos (images, height, width) = feature prediction
+    for imageIdx in maxPreds.size()[0]:
+        for heightIdx in maxPreds.size()[1]:
+            for widthIdx in maxPreds.size()[2]:
+                ret[imageIdx, maxPreds[imageIdx, heightIdx, widthIdx], heightIdx, widthIdx] = 1
+    return ret
+
+
+
 def getClassFromChannels(preds):
     return torch.argmax(preds, axis=1)
 
-'''
+# pred is predicted probabilites
+# target is one hot encoding of 
 def iou(pred, target):
-    ious = []
-    for cls in range(n_class):
-        # Complete this function
-        intersection = # intersection calculation
-        union = #Union calculation
-        if union == 0:
-            ious.append(float('nan'))  # if there is no ground truth, do not include in evaluation
-        else:
-            # Append the calculated IoU to the list ious
-    return ious
-'''
+    # i didt like the way they did it, looks like it was only for one example
+    # ious = []
+    # for cls in range(n_class):
+    #     # Complete this function
+    #     intersection = # intersection calculation
+    #     union = #Union calculation
+    #     if union == 0:
+    #         ious.append(float('nan'))  # if there is no ground truth, do not include in evaluation
+    #     else:
+    #         # Append the calculated IoU to the list ious
+    # return ious
+    oneHotPReds = getOneHotPredictionsFromProbabilites(pred)
+
+    # numerator
+    classTp = oneHotPReds * target # get intersection
+    classTp = torch.sum(classTp, axis=2)
+    classTp = torch.sum(classTp, axis=2) # sum accross image height and width
+
+
+    # denominator
+    union = oneHotPReds + target # get union
+    union[torch.where(union > 1)] = 1 # account for intersection points
+    classUnion = torch.sum(union, axis=2)
+    classUnion = torch.sum(classUnion, axis=2) # sum across height and width of image
+
+    return classTp.float() / classUnion.float()
+
 
 # pred - pred(images, classes, height, width) = prediction class
 # target - target(images, classes, height, width) = target class
