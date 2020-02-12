@@ -70,7 +70,7 @@ class ModelRunner:
                 
                 self.optimizer.zero_grad()
 
-                if(self.settings['imagesPerEpoch']):
+                if('imagesPerEpoch' in self.settings):
                     if iter*self.batch_size > self.settings['imagesPerEpoch']:
                         break
                 
@@ -85,7 +85,7 @@ class ModelRunner:
                 loss = self.criterion(outputs, labels)
                 lossSum += loss.data
                 accuracies = pixel_acc(outputs, labels)
-                
+
                 accuracySum += torch.sum(accuracies)/self.batch_size
                 
 
@@ -123,7 +123,7 @@ class ModelRunner:
         accuracySum = 0
         totalImage=0
         for iter, (X, tar, Y) in enumerate(vals):
-            if self.settings['imagesPerEpoch']:
+            if 'imagesPerEpoch' in self.settings:
                 if iter * self.batch_size > self.settings['imagesPerEpoch']:
                     break
             with torch.no_grad():
