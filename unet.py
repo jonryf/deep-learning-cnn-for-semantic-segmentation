@@ -57,7 +57,9 @@ class UNET(nn.Module):
         self.conv9_2   = nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1 )
         
         
-        self.classifier = nn.Conv2d(64, self.n_class, kernel_size=1, stride=1, padding=0, )
+        self.outConv = nn.Conv2d(64, self.n_class, kernel_size=1, stride=1, padding=0)
+
+        self.softie = nn.Softmax2d()
   
 
     def forward(self, x):
@@ -97,8 +99,4 @@ class UNET(nn.Module):
         outConv9 = F.relu(self.conv9_1(torch.cat((out8, tensorCenterCrop(outConv1, out8.size()[2], out8.size(3))), 1)))
 #         outConv9 = F.relu(self.conv9_2(outConv9))
         
-        
-        preds = self.classifier(outConv9)
-  
-
-        return preds  # size=(N, n_class, x.H/1, x.W/1)
+        return self.softie(self.outConv(outConv9))  # size=(N, n_class, x.H/1, x.W/1)
