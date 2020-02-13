@@ -67,7 +67,6 @@ class VGG(nn.Module):
         self.bn8 = nn.BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
         self.deconv8 = nn.ConvTranspose2d(64, self.n_class, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
 
-
     def forward(self, x):
         out_encoder = nn.Sequential(
             self.mod,
