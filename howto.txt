@@ -1,4 +1,34 @@
 How to run on cluster:
-1. Ssh into cluster: ssh <username>@ieng6.ucsd.edu
-2. Create pod: cs253wi20 & launch-scipy-ml-gpu.sh -g 1 -b
-3. 
+
+SSH into cluster
+$ ssh <username>@ieng6.ucsd.edu
+
+Move to your home directory:
+$ cd /home/linux/ieng6/cs253wi20/<username>
+
+To get access to kubernetes cluster
+$ cs253wi20
+
+Create a new pod with 1 gpu
+$ launch-scipy-ml-gpu.sh -g 1 -b
+
+View active pods
+$ kubectl get pods
+
+Ssh into pod
+$ kubesh <your-username>-<pod number>
+
+Copy from local directory to cluster:
+$ scp -r ./  <username>@ieng6.ucsd.edu:/home/linux/ieng6/cs253wi20/<username>/code
+
+Copy from cluster to pod:
+$ kubectl cp ./ <username>-<pod number>:/tmp/code
+
+Run tasks from pod:
+$ python /tmp/code/tasks.py <save name for graphs>
+
+Sometimes the copy to the pod does not override the code just run:
+$ rm -rf /tmp/code
+
+
+
