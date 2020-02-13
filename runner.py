@@ -1,6 +1,7 @@
 from dataloader import *
 from utils import *
 from dataloader import DataLoader
+from vgg11 import VGG
 import torch.nn.modules.loss as loss
 import torch.optim as optim
 import time
@@ -21,7 +22,10 @@ class ModelRunner:
 
         self.criterion = loss.CrossEntropyLoss()
         self.model = settings['MODEL'](n_class=n_class)
-        self.model.apply(init_weights)
+
+        # account for VGG needing different init_weights
+        flag = (settings['MODEL'] == VGG)
+        self.model.apply(init_weights(transfer=flag))
         self.optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate)
 
         use_gpu = torch.cuda.is_available()
