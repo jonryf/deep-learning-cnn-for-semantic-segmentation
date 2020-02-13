@@ -12,7 +12,9 @@ def task2(title=None):
         'APPLY_TRANSFORMATIONS': False,
         'MODEL': FCN,
         'EPOCHS': 50,
-        'batch_size': 4
+        'batch_size': 4,
+        'learning_rate': 5e-3,
+        'title': title
     }
     print("Training FCN on", settings['EPOCHS'], "Epochs")
     runner = ModelRunner(settings)
@@ -28,14 +30,16 @@ def task3_1():
         'MODEL': FCN,
         'EPOCHS': 10,
         'batch_size': 4,
-        'LOAD_FROM_PATH': 'baseline_model.model'
+        'LOAD_FROM_PATH': 'baseline_model.model',
+        'learning_rate': 5e-3
     }
 
     settings_task3_1 = {
         'APPLY_TRANSFORMATIONS': True,
         'MODEL': FCN,
         'batch_size': 4,
-        'EPOCHS': 34,
+        'EPOCHS': 10,
+        'learning_rate': 5e-3
     }
 
     #baseline_runner = ModelRunner(settings_baseline)
@@ -55,7 +59,8 @@ def task_3_3():
         'MODEL': FCN,
         'EPOCHS': 10,
         'batch_size': 4,
-        'LOAD_FROM_PATH': 'baseline_model.model'
+        'LOAD_FROM_PATH': 'baseline_model.model',
+        'learning_rate': 5e-3
     }
 
     settings_task3_1 = {
@@ -63,7 +68,8 @@ def task_3_3():
         'APPLY_TRANSFORMATIONS': True,
         'MODEL': FCN,
         'batch_size': 4,
-        'EPOCHS': 34
+        'EPOCHS': 10,
+        'learning_rate': 5e-3
     }
 
     baseline_runner = ModelRunner(settings_baseline)
@@ -94,13 +100,15 @@ def task_3_4():
         'MODEL': FCN,
         'EPOCHS': 10,
         'batch_size': 4,
-        'LOAD_FROM_PATH': 'baseline_model.model'
+        'LOAD_FROM_PATH': 'baseline_model.model',
+        'learning_rate': 5e-3
     }
     settings_task3_4 = {
         'APPLY_TRANSFORMATIONS': False,
         'MODEL': VGG,
         'batch_size': 4,
-        'EPOCHS': 10
+        'EPOCHS': 10,
+        'learning_rate': 5e-3
     }
 
     baseline_runner = ModelRunner(settings_baseline)
@@ -115,7 +123,8 @@ def task_unet(title=None):
         'MODEL': UNET,
         'EPOCHS': 50,
         'batch_size': 1,
-        'imagesPerEpoch': 1
+        'learning_rate': 5e-4,
+        'title': title
     }
     print("Training UNET on", settings['EPOCHS'], "Epochs")
     runner = ModelRunner(settings)
@@ -129,9 +138,12 @@ def test_task(title="TestRun"):
     settings = {
         'APPLY_TRANSFORMATIONS': False,
         'MODEL': FCN,
-        'EPOCHS': 8,
-        'batch_size': 4,
-        'imagesPerEpoch': 20
+        'EPOCHS': 10,
+        'batch_size': 1,
+        'imagesPerEpoch': 10,
+        'learning_rate': 5e-3,
+        'title': title
+
     }
     print("Training FCN on", settings['EPOCHS'], "Epochs")
     runner = ModelRunner(settings)
@@ -142,5 +154,4 @@ def test_task(title="TestRun"):
 
 
 if __name__ == "__main__":
-    #test_task(title=sys.argv[1])
     task_3_3()

@@ -16,11 +16,13 @@ class ModelRunner:
         self.test_loader = None
         self.bestValidationLoss = None
         self.batch_size = settings['batch_size']
+        self.learning_rate = settings['learning_rate']
+        self.title = settings['title']
 
         self.criterion = loss.CrossEntropyLoss()
         self.model = settings['MODEL'](n_class=n_class)
         self.model.apply(init_weights)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=5e-3)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate)
 
         use_gpu = torch.cuda.is_available()
         if use_gpu:
@@ -116,7 +118,7 @@ class ModelRunner:
             print("Train epoch {}, time elapsed {}, loss {}, accuracy: {}".format(epoch, time.time() - ts, lossSum, accuracy.item()))
             print("Saving most recent model")
 
-            torch.save(self.model, '{}lastEpochModel'.format(self.model_name))
+            torch.git(self.model, '{}lastEpochModel'.format(self.title))
 
             self.val(epoch)
 
@@ -148,7 +150,7 @@ class ModelRunner:
         if self.bestValidationLoss is None or lossSum < self.bestValidationLoss:
             print("Saving best model")
             self.bestValidationLoss = lossSum
-            torch.save(self.model, '{}{}bestModel'.format(self.settings.get('NAME', ''), self.model_name))
+            torch.save(self.model, '{}{}bestModel'.format(self.settings.get('NAME', ''), self.title))
         self.model.validation_loss.append(lossSum)
         self.model.validation_acc.append(accuracy.item())
         # Complete this function - Calculate loss, accuracy and IoU for every epoch
