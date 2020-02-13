@@ -9,7 +9,7 @@ import time
 class ModelRunner:
     def __init__(self, settings):
         self.settings = settings
-        self.model_name = settings['model'].__name__
+        self.model_name = settings['MODEL'].__name__
         self.transforms = get_transformations() if settings['APPLY_TRANSFORMATIONS'] else None
         self.train_loader = None
         self.val_loader = None
@@ -18,7 +18,7 @@ class ModelRunner:
         self.batch_size = settings['batch_size']
 
         self.criterion = loss.CrossEntropyLoss()
-        self.model = settings['model'](n_class=n_class)
+        self.model = settings['MODEL'](n_class=n_class)
         self.model.apply(init_weights)
         self.optimizer = optim.Adam(self.model.parameters(), lr=5e-3)
 

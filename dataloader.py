@@ -94,9 +94,18 @@ class CityScapesDataset(Dataset):
     def __getitem__(self, idx):
         img_name   = self.data.iloc[idx, 0]
 
-        img = np.asarray(Image.open(img_name).convert('RGB'))
+        img = Image.open(img_name).convert('RGB')
         label_name = self.data.iloc[idx, 1]
-        label      = np.asarray(Image.open(label_name))
+        label = Image.open(label_name)
+
+        # apply transformation
+        if self.transform is not None:
+            img = self.transform(img)
+            label = self.transform(label)
+
+
+        img = np.asarray(img)
+        label = np.asarray(label)
 
         # reduce mean
         img = img[:, :, ::-1]  # switch to BGR
@@ -106,14 +115,12 @@ class CityScapesDataset(Dataset):
         img[2] -= self.means[2]
 
 
+
         # convert to tensor
         img = torch.from_numpy(img.copy()).float()
         label = torch.from_numpy(label.copy()).long()
 
-        # apply transformation
-        if self.transform is not None:
-            img = self.transform(img)
-            label = self.transform(label)
+
 
         # create one-hot encoding
         h, w = label.shape

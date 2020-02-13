@@ -3,6 +3,8 @@ import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+from PIL import Image
 
 def getClassFromChannels(preds):
     return torch.argmax(preds, axis=1)
@@ -56,28 +58,7 @@ def get_transformations():
     return transforms.Compose([
             transforms.ColorJitter(),
             transforms.RandomRotation(10),
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor()])
-
-
-def graph_error(means, stds, labels, legends, title, show=True):
-    """
-    Create a plot with error bar
-    @param means: mean data
-    @param stds: standard deviation
-    @param labels: labels the axises
-    @param legends: legends for the plot
-    @param title: title of the plot
-    @param show: if the plot should be displayed right away. Set to false to display multiple graphs in same plot
-    """
-    for i in range(2):
-        plt.errorbar(np.arange(1, len(means[i])+1), means[i], yerr=stds[i])
-    plt.title(title)
-    plt.xlabel(labels[0])
-    plt.ylabel(labels[1])
-    plt.legend(legends)
-    if show:
-        plt.show()
+            transforms.RandomHorizontalFlip()])
 
 
 def graph_plot(data, labels, legends, title, show=True):
@@ -109,14 +90,14 @@ def plot_loss(model, title, show=True):
     # plot the loss
     plt.clf()
     graph_plot([model.training_loss, model.validation_loss],
-               ["Epoch", "Cross-entropy loss"], ["Training loss", "Validation loss"], title + 'loss', show)
+               ["Epoch", "Cross-entropy loss"], ["Training loss", "Validation loss"], title, show)
 
 
 def plot_acc(model, title, show=True):
     # plot the accuracy
     plt.clf()
     graph_plot([model.training_acc, model.validation_acc],
-               ["Epoch", "Accuracy"], ["Training accuracy", "Validation accuracy"], title + 'acc', show)
+               ["Epoch", "Accuracy"], ["Training accuracy", "Validation accuracy"], title, show)
 
 
 def plot(model, title=""):
@@ -151,3 +132,14 @@ def multi_plots(models, names):
     # plot the accuracy
     graph_plot([model.training_acc, model.validation_acc],
                ["Epoch", "Accuracy"], ["Training accuracy", "Validation accuracy"])
+
+
+def visualize(image_idx, segmentation, csv='test.csv'):
+    image = pd.read_csv(csv).iloc[image_idx, 0]
+    image = Image.open(image).convert('RGB')
+    segmentation = segmentation.numpy()[0]
+    plt.figure(figsize = (20,40))
+    plt.imshow(np.asarray(image), interpolation='none')
+    plt.imshow(np.asarray(segmentation), interpolation='none', alpha=0.7)
+    plt.axis('off')
+    plt.savefig('visualization.png')
