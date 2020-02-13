@@ -152,21 +152,39 @@ def test_task(title="TestRun"):
     # runner.val()
     runner.plot(title=title)
 
+def test_vgg(title="TestRun"):
+    settings = {
+        'APPLY_TRANSFORMATIONS': False,
+        'MODEL': VGG,
+        'EPOCHS': 10,
+        'batch_size': 1,
+        'imagesPerEpoch': 10,
+        'learning_rate': 5e-3,
+        'title': title
+
+    }
+    print("Training VGG on", settings['EPOCHS'], "Epochs")
+    runner = ModelRunner(settings)
+    runner.load_data()
+    runner.train()
+    # runner.val()
+    runner.plot(title=title)
 
 if __name__ == "__main__":
-    task = input("Which task? (2, 3.1, 3.2, 3.3, 3.4, 3.5")
+    task = input("Which task? (2, 3.1, 3.2, 3.3, 3.4, 3.5): ")
     title = input("Name of the graph:")
-    if task == 2:
+    if task == '2':
         task2(title)
-    elif task == 3.1:
+    elif task == '3.1':
         task3_1(title)
     elif task == 3.2:
         pass
-    elif task == 3.3:
+    elif task == '3.3':
         task_3_3(title)
-    elif task == 3.4:
-        task_3_4(title)
-    elif task == 3.5:
+    elif task == '3.4':
+        #task_3_4()
+        test_vgg(title)
+    elif task == '3.5':
         task_unet(title)
 
     print("Thank you, exiting program")
