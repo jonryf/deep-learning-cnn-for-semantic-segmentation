@@ -5,7 +5,7 @@ from unet import UNET
 import torch
 import torch.nn as nn
 import sys
-
+import io
 
 def task2(title=None):
     settings = {
@@ -154,4 +154,19 @@ def test_task(title="TestRun"):
 
 
 if __name__ == "__main__":
-    task_3_3()
+    task = input("Which task? (2, 3.1, 3.2, 3.3, 3.4, 3.5")
+    title = input("Name of the graph:")
+    if task == 2:
+        task2(title)
+    elif task == 3.1:
+        task3_1(title)
+    elif task == 3.2:
+        pass
+    elif task == 3.3:
+        task_3_3(title)
+    elif task == 3.4:
+        task_3_4(title)
+    elif task == 3.5:
+        task_unet(title)
+
+    print("Thank you, exiting program")
