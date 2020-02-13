@@ -35,14 +35,18 @@ def task3_1():
         'APPLY_TRANSFORMATIONS': True,
         'MODEL': FCN,
         'batch_size': 4,
-        'EPOCHS': 10
+        'EPOCHS': 34,
     }
 
-    baseline_runner = ModelRunner(settings_baseline)
-    task_model = ModelRunner(settings_task3_1)
+    #baseline_runner = ModelRunner(settings_baseline)
+    runner = ModelRunner(settings_task3_1)
+    runner.load_data()
+    runner.train()
+    #runner.val()
+    runner.plot(title="model with transformations")
 
     # combine two plots
-    task_model.plot(baseline_runner, names=["Baseline", "Model with transformations"])
+    #task_model.plot(baseline_runner, names=["Baseline", "Model with transformations"])
 
 
 def task_3_3():
@@ -55,14 +59,15 @@ def task_3_3():
     }
 
     settings_task3_1 = {
+        'NAME': 'task 3-1',
         'APPLY_TRANSFORMATIONS': True,
         'MODEL': FCN,
         'batch_size': 4,
-        'EPOCHS': 10
+        'EPOCHS': 34
     }
 
     baseline_runner = ModelRunner(settings_baseline)
-    task_model = ModelRunner(settings_task3_1)
+    runner = ModelRunner(settings_task3_1)
 
     weights = [[1.030186615981065], [0.9830729949422731], [1.016867434679172], [1.0147616646506572],
                [1.016472345162264], [1.027360477860356], [1.0178136572899759], [0.6940124437406467],
@@ -74,10 +79,13 @@ def task_3_3():
                [1.0281578344700142], [1.029891278320577], [1.0300882554157473], [1.0281786972310123],
                [1.02940316600717], [1.0265277626400904]]
     class_weights = torch.FloatTensor(weights).cuda()
-    task_model.criterion = nn.CrossEntropyLoss(weight=class_weights)
+    runner.criterion = nn.CrossEntropyLoss(weight=class_weights)
+    runner.train()
+    # runner.val()
+    runner.plot(title="model with transformations")
 
     # combine two plots
-    task_model.plot(baseline_runner, names=["Baseline", "Model with transformations"])
+    #task_model.plot(baseline_runner, names=["Baseline", "Model with transformations"])
 
 
 def task_3_4():
@@ -134,4 +142,5 @@ def test_task(title="TestRun"):
 
 
 if __name__ == "__main__":
-    test_task(title=sys.argv[1])
+    #test_task(title=sys.argv[1])
+    task_3_3()
