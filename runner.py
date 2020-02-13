@@ -24,8 +24,11 @@ class ModelRunner:
         self.model = settings['MODEL'](n_class=n_class)
 
         # account for VGG needing different init_weights
-        flag = (settings['MODEL'] == VGG)
-        self.model.apply(init_weights(transfer=flag))
+        transfer = (settings['MODEL'] == VGG)
+        if transfer:
+            self.model.apply(init_weights_transfer)
+        else:
+            self.model.apply(init_weights)
         self.optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate)
 
         use_gpu = torch.cuda.is_available()

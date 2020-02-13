@@ -20,12 +20,18 @@ $ kubesh <your-username>-<pod number>
 
 Copy from local directory to cluster:
 $ scp -r ./  <username>@ieng6.ucsd.edu:/home/linux/ieng6/cs253wi20/<username>/code
+$ scp -r ./  apolus@ieng6.ucsd.edu:/home/linux/ieng6/cs253wi20/apolus/code
+
 
 Copy from cluster to pod:
 $ kubectl cp ./ <username>-<pod number>:/tmp/code
+$ kubectl cp ./ apolus-7825:/tmp/code
+
 
 Run tasks from pod:
-$ python /tmp/code/tasks.py <save name for graphs>
+$ python /tmp/code/tasks.py
+    --> input task name
+    --> input graph name
 
 Sometimes the copy to the pod does not override the code just run:
 $ rm -rf /tmp/code

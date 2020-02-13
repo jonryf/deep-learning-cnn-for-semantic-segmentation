@@ -68,21 +68,27 @@ def pixel_acc(pred, target):
     return s.float() / float(pred.size()[2] * pred.size()[3])
 
 
-def init_weights(model, transfer=False):
+def init_weights(model):
     """
     Apply weights to a Pytorch model
 
     :param model: Pytorch model
     """
-    if transfer == False:
-        if isinstance(model, nn.Conv2d) or isinstance(model, nn.ConvTranspose2d):
-            nn.init.xavier_uniform_(model.weight.data)
-            nn.init.zeros_(model.bias.data)
-    else:
-        if isinstance(model, nn.ConvTranspose2d):
-            nn.init.xavier_uniform_(model.weight.data)
-            nn.init.zeros_(model.bias.data)
 
+    if isinstance(model, nn.Conv2d) or isinstance(model, nn.ConvTranspose2d):
+        nn.init.xavier_uniform_(model.weight.data)
+        nn.init.zeros_(model.bias.data)
+
+
+def init_weights_transfer(model):
+    """
+    Apply weights to a Pytorch model
+
+    :param model: Pytorch model
+    """
+    if isinstance(model, nn.ConvTranspose2d):
+        nn.init.xavier_uniform_(model.weight.data)
+        nn.init.zeros_(model.bias.data)
 
 def get_transformations():
     """
