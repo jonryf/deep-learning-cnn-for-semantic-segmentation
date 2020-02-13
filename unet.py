@@ -61,6 +61,7 @@ class UNET(nn.Module):
   
 
     def forward(self, x):
+        torch.cuda.empty_cache()
 
         outConv1 = F.relu(self.conv1_1(x))
 #         outConv1 = F.relu(self.conv1_2(outConv1))
@@ -99,6 +100,6 @@ class UNET(nn.Module):
         
         
         preds = self.classifier(outConv9)
-  
+        torch.cuda.empty_cache()
 
         return preds  # size=(N, n_class, x.H/1, x.W/1)
