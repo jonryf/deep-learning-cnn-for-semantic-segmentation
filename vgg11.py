@@ -32,9 +32,9 @@ class VGG(nn.Module):
         for param in self.mod.parameters():
             param.requires_grad = False
         self.n_class = n_class
-        self.fc = nn.Linear(1000, 512)
-        self.bnd1 = nn.BatchNorm2d(512)
-        self.relu = nn.ReLU(inplace=True)
+        #self.fc = nn.Linear(1000, 512)
+        #self.bnd1 = nn.BatchNorm2d(512)
+        #self.relu = nn.ReLU(inplace=True)
 
         # output
         self.unpool1 = nn.MaxUnpool2d(2, stride=2)
