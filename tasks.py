@@ -124,6 +124,7 @@ def task_unet(title=None):
         'EPOCHS': 50,
         'batch_size': 1,
         'learning_rate': 5e-4,
+        'imagesPerEpoch': 10,
         'title': title
     }
     print("Training UNET on", settings['EPOCHS'], "Epochs")

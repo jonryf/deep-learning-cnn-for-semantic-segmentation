@@ -125,7 +125,7 @@ class ModelRunner:
             print("Train epoch {}, time elapsed {}, loss {}, accuracy: {}".format(epoch, time.time() - ts, lossSum, accuracy.item()))
             print("Saving most recent model")
 
-            torch.git(self.model, '{}lastEpochModel'.format(self.title))
+            torch.save(self.model, '{}lastEpochModel'.format(self.title))
 
             self.val(epoch)
 
