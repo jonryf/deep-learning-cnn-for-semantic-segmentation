@@ -72,25 +72,25 @@ class VGG(nn.Module):
 
         out_decoder = nn.Sequential(
             # output
-            self.unpool1,
+            # self.unpool1,
             self.ReLU,
             self.bn1,
             self.deconv1,
-            # self.ReLU
+            self.ReLU,
             self.bn2,
             self.deconv2,
-            self.unpool2,
-            # self.ReLU
+            # self.unpool2,
+            self.ReLU,
             self.bn3,
             self.deconv3,
-            # self.ReLU
+            self.ReLU,
             self.bn4,
             self.deconv4,
-            self.unpool3,
-            # self.ReLU
+            # self.unpool3,
+            self.ReLU,
             self.bn5,
             self.deconv5,
-            # self.ReLU
+            self.ReLU,
             self.bn6,
             self.deconv6,
             self.unpool4,
@@ -98,7 +98,7 @@ class VGG(nn.Module):
             self.bn7,
             self.deconv7,
             self.unpool5,
-            # self.ReLU
+            self.ReLU,
             self.bn8,
             self.deconv8,
         )
