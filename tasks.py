@@ -161,7 +161,7 @@ def test_vgg(title="TestRun"):
         'batch_size': 1,
         'imagesPerEpoch': 10,
         'learning_rate': 5e-3,
-        'title': title
+        'title': 'VGG'
 
     }
     print("Training VGG on", settings['EPOCHS'], "Epochs")
@@ -187,5 +187,7 @@ if __name__ == "__main__":
         test_vgg(title)
     elif task == '3.5':
         task_unet(title)
+    elif task == 'test_task':
+        test_task(title)
 
     print("Thank you, exiting program")

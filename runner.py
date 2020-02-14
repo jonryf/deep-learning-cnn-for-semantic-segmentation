@@ -24,7 +24,7 @@ class ModelRunner:
         self.model = settings['MODEL'](n_class=n_class)
 
         # account for VGG needing different init_weights
-        transfer = (settings['MODEL'] == VGG)
+        transfer = (settings['title'] == 'VGG')
         if transfer:
             self.model.apply(init_weights_transfer)
         else:
