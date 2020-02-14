@@ -5,6 +5,7 @@ from vgg11 import VGG
 import torch.nn.modules.loss as loss
 import torch.optim as optim
 import time
+from datetime import datetime
 
 
 class ModelRunner:
@@ -19,6 +20,10 @@ class ModelRunner:
         self.batch_size = settings['batch_size']
         self.learning_rate = settings['learning_rate']
         self.title = settings['title']
+
+        self.start_time = datetime.now()
+
+
 
         self.criterion = loss.CrossEntropyLoss()
         self.model = settings['MODEL'](n_class=n_class)
@@ -125,7 +130,7 @@ class ModelRunner:
             print("Train epoch {}, time elapsed {}, loss {}, accuracy: {}".format(epoch, time.time() - ts, lossSum, accuracy.item()))
             print("Saving most recent model")
 
-            torch.save(self.model, '{}lastEpochModel'.format(self.title))
+            torch.save(self.model, '{} - Last Epoch Model for {}'.format(self.start_time,self.title))
 
             self.val(epoch)
 
@@ -157,9 +162,11 @@ class ModelRunner:
         if self.bestValidationLoss is None or lossSum < self.bestValidationLoss:
             print("Saving best model")
             self.bestValidationLoss = lossSum
-            torch.save(self.model, '{}{}bestModel'.format(self.settings.get('NAME', ''), self.title))
+            torch.save(self.model, '{}{} - Best Model for {}'.format(self.start_time, self.settings.get('NAME', ''), self.title))
         self.model.validation_loss.append(lossSum)
         self.model.validation_acc.append(accuracy.item())
+
+        self.plot(title=self.title)
         # Complete this function - Calculate loss, accuracy and IoU for every epoch
         # Make sure to include a softmax after the output from your model
 
@@ -170,7 +177,7 @@ class ModelRunner:
 
     def plot(self, compare_to=None, names=None, title=None):
         if compare_to is None:
-            plot(self.model, title=title)
+            plot(self.model, title=title, time=self.start_time)
         else:
             multi_plots([self.model, compare_to.model], names)
 

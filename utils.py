@@ -2,10 +2,12 @@ from torchvision import transforms
 import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
+from dataloader import labels_classes
 import numpy as np
 import pandas as pd
 from PIL import Image
 from datetime import datetime
+from dataloader import labels_classes
 
 #size (images, features, height, width)
 def getOneHotPredictionsFromProbabilites(preds):
@@ -57,9 +59,25 @@ def iou(pred, target):
 # target - target(images, classes, height, width) = target class
 # returns - (images) = pecent
 def pixel_acc(pred, target):
+
     classPreds = getClassFromChannels(pred) #[target != 255]
     classTarget = target #[target != 255] #getClassFromChannels(target)
+    '''
+    excluded_classes = torch.tensor([0,1,2,3,4,5,6,9,10,14,15,16,18,29,39])
+
+    classTarget = torch.where(classTarget not in excluded_classes, None, classTarget)
+
+    classPreds = torch.where(classPreds not in excluded_classes, None, classPreds)
+    
+    classPreds = torch.where(labels_classes[classPreds.item()][6], classPreds, None)
+
+    classTarget = torch.where(labels_classes[classPreds.item()][6], classPreds, None)
+    '''
+
+
     diff = classPreds - classTarget
+
+
     x = torch.tensor(1).cuda()
     y = torch.tensor(0).cuda()
     correct = torch.where(diff == 0, x, y)
@@ -103,7 +121,7 @@ def get_transformations():
             transforms.RandomHorizontalFlip()])
 
 
-def graph_plot(data, labels, legends, title="", show=True):
+def graph_plot(data, labels, legends, time, title="", show=True):
     """
     Plot multiple graphs in same plot
 
@@ -122,10 +140,10 @@ def graph_plot(data, labels, legends, title="", show=True):
     plt.legend(legends)
     if show:
         plt.show()
-        plt.savefig('{} -{}.png'.format(datetime.now(), title))
+        plt.savefig('{} -{}.png'.format(time, title))
 
 
-def plot_loss(model, title, show=True):
+def plot_loss(model, title, time, show=True):
     """
     Plot loss and accuracy graphs
 
@@ -134,20 +152,20 @@ def plot_loss(model, title, show=True):
     # plot the loss
     plt.clf()
     graph_plot([model.training_loss, model.validation_loss],
-               ["Epoch", "Cross-entropy loss"], ["Training loss", "Validation loss"], "Loss for " + title, show)
+               ["Epoch", "Cross-entropy loss"], ["Training loss", "Validation loss"], time,"Loss for " + title, show)
 
 
 
-def plot_acc(model, title, show=True):
+def plot_acc(model, title, time, show=True):
     # plot the accuracy
     plt.clf()
     graph_plot([model.training_acc, model.validation_acc],
-               ["Epoch", "Accuracy"], ["Training accuracy", "Validation accuracy"], "Accuracy for " + title , show)
+               ["Epoch", "Accuracy"], ["Training accuracy", "Validation accuracy"], time, "Accuracy for " + title , show)
 
 
-def plot(model, title=""):
-    plot_loss(model, title, show=True)
-    plot_acc(model, title, show=True)
+def plot(model, time, title="",):
+    plot_loss(model, title, time, show=True)
+    plot_acc(model, title, time, show=True)
 
 
 def multi_plots(models, names):

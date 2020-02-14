@@ -21,10 +21,9 @@ def task2(title=None):
     runner.load_data()
     runner.train()
     # runner.val()
-    runner.plot(title=title)
 
 
-def task3_1():
+def task3_1(title="model with transformations"):
     settings_baseline = {
         'APPLY_TRANSFORMATIONS': False,
         'MODEL': FCN,
@@ -39,7 +38,8 @@ def task3_1():
         'MODEL': FCN,
         'batch_size': 4,
         'EPOCHS': 10,
-        'learning_rate': 5e-3
+        'learning_rate': 5e-3,
+        'title': title
     }
 
     #baseline_runner = ModelRunner(settings_baseline)
@@ -47,13 +47,12 @@ def task3_1():
     runner.load_data()
     runner.train()
     #runner.val()
-    runner.plot(title="model with transformations")
 
     # combine two plots
     #task_model.plot(baseline_runner, names=["Baseline", "Model with transformations"])
 
 
-def task_3_3():
+def task_3_3(title = 'task3-3'):
     settings_baseline = {
         'APPLY_TRANSFORMATIONS': False,
         'MODEL': FCN,
@@ -69,7 +68,8 @@ def task_3_3():
         'MODEL': FCN,
         'batch_size': 4,
         'EPOCHS': 10,
-        'learning_rate': 5e-3
+        'learning_rate': 5e-3,
+        'tit;e': title
     }
 
     baseline_runner = ModelRunner(settings_baseline)
@@ -88,7 +88,6 @@ def task_3_3():
     runner.criterion = nn.CrossEntropyLoss(weight=class_weights)
     runner.train()
     # runner.val()
-    runner.plot(title="model with transformations")
 
     # combine two plots
     #task_model.plot(baseline_runner, names=["Baseline", "Model with transformations"])
@@ -108,16 +107,14 @@ def task_3_4(title):
     runner.load_data()
     runner.train()
     # runner.val()
-    runner.plot(title)
 
-def task_unet(title=None):
+def task_unet(title='Unet'):
     settings = {
         'APPLY_TRANSFORMATIONS': False,
         'MODEL': UNET,
         'EPOCHS': 50,
         'batch_size': 1,
-        'learning_rate': 5e-4,
-        'imagesPerEpoch': 10,
+        'learning_rate': 5e-5,
         'title': title
     }
     print("Training UNET on", settings['EPOCHS'], "Epochs")
@@ -125,7 +122,6 @@ def task_unet(title=None):
     runner.load_data()
     runner.train()
     # runner.val()
-    runner.plot(title=title)
 
 
 def test_task(title="TestRun"):
@@ -144,9 +140,8 @@ def test_task(title="TestRun"):
     runner.load_data()
     runner.train()
     # runner.val()
-    runner.plot(title=title)
 
-def test_vgg(title="TestRun"):
+def test_vgg(title="VGG_Test"):
     settings = {
         'APPLY_TRANSFORMATIONS': False,
         'MODEL': VGG,
@@ -154,15 +149,13 @@ def test_vgg(title="TestRun"):
         'batch_size': 1,
         'imagesPerEpoch': 10,
         'learning_rate': 5e-3,
-        'title': 'VGG'
-
+        'title': title
     }
     print("Training VGG on", settings['EPOCHS'], "Epochs")
     runner = ModelRunner(settings)
     runner.load_data()
     runner.train()
     # runner.val()
-    runner.plot(title=title)
 
 if __name__ == "__main__":
     task = input("Which task? (2, 3.1, 3.2, 3.3, 3.4, 3.5): ")
@@ -170,11 +163,11 @@ if __name__ == "__main__":
     if task == '2':
         task2(title)
     elif task == '3.1':
-        task3_1()
+        task3_1(title)
     elif task == 3.2:
         pass
     elif task == '3.3':
-        task_3_3()
+        task_3_3(title)
     elif task == '3.4':
         task_3_4(title)
         #test_vgg(title)
