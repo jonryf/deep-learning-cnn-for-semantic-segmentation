@@ -170,13 +170,13 @@ if __name__ == "__main__":
     if task == '2':
         task2(title)
     elif task == '3.1':
-        task3_1(title)
+        task3_1()
     elif task == 3.2:
         pass
     elif task == '3.3':
-        task_3_3(title)
+        task_3_3()
     elif task == '3.4':
-        task_3_4()
+        task_3_4(title)
         #test_vgg(title)
     elif task == '3.5':
         task_unet(title)
