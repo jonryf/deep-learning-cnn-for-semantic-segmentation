@@ -94,28 +94,21 @@ def task_3_3():
     #task_model.plot(baseline_runner, names=["Baseline", "Model with transformations"])
 
 
-def task_3_4():
-    settings_baseline = {
-        'APPLY_TRANSFORMATIONS': False,
-        'MODEL': FCN,
-        'EPOCHS': 10,
-        'batch_size': 4,
-        'LOAD_FROM_PATH': 'baseline_model.model',
-        'learning_rate': 5e-3
-    }
-    settings_task3_4 = {
+def task_3_4(title):
+    settings = {
         'APPLY_TRANSFORMATIONS': False,
         'MODEL': VGG,
+        'EPOCHS': 50,
         'batch_size': 4,
-        'EPOCHS': 10,
-        'learning_rate': 5e-3
+        'learning_rate': 5e-4,
+        'title': title
     }
-
-    baseline_runner = ModelRunner(settings_baseline)
-    task_model = ModelRunner(settings_task3_4)
-
-    task_model.plot(baseline_runner, names=["Baseline", "VGG 11"])
-
+    print("Training UNET on", settings['EPOCHS'], "Epochs")
+    runner = ModelRunner(settings)
+    runner.load_data()
+    runner.train()
+    # runner.val()
+    runner.plot(title="Using VGG 11-Layer as Encoder")
 
 def task_unet(title=None):
     settings = {
