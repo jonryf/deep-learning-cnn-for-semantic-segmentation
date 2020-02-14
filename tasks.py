@@ -187,5 +187,7 @@ if __name__ == "__main__":
         test_vgg(title)
     elif task == '3.5':
         task_unet(title)
+    elif task == 'test_task':
+        test_task(title)
 
     print("Thank you, exiting program")
