@@ -161,7 +161,7 @@ def test_vgg(title="TestRun"):
         'batch_size': 1,
         'imagesPerEpoch': 10,
         'learning_rate': 5e-3,
-        'title': title
+        'title': 'VGG'
 
     }
     print("Training VGG on", settings['EPOCHS'], "Epochs")
