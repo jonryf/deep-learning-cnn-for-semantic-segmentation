@@ -11,7 +11,6 @@ from datetime import datetime
 class ModelRunner:
     def __init__(self, settings):
         self.settings = settings
-        self.model_name = settings['MODEL'].__name__
         self.transforms = get_transformations() if settings['APPLY_TRANSFORMATIONS'] else None
         self.train_loader = None
         self.val_loader = None
@@ -21,19 +20,42 @@ class ModelRunner:
         self.learning_rate = settings['learning_rate']
         self.title = settings['title']
 
+        if 'loaded' in settings:
+            if not settings['loaded']:
+                self.model = settings['MODEL'](n_class=n_class)
+                self.model_name = settings['MODEL'].__name__
+            else:
+                self.model = settings['MODEL']
+        else:
+            self.model = settings['MODEL'](n_class=n_class)
+            self.model_name = settings['MODEL'].__name__
+
+            
+
         self.start_time = datetime.now()
 
 
 
         self.criterion = loss.CrossEntropyLoss()
-        self.model = settings['MODEL'](n_class=n_class)
+        
 
         # account for VGG needing different init_weights
         transfer = (settings['title'] == 'VGG')
         if transfer:
-            self.model.apply(init_weights_transfer)
+            if 'loaded' in settings:
+                if not settings['loaded']:
+                    self.model.apply(init_weights_transfer)
+            else:
+                self.model.apply(init_weights_transfer)
         else:
-            self.model.apply(init_weights)
+            if 'loaded' in settings:
+                if not settings['loaded']:
+                    self.model.apply(init_weights)
+            else:
+                self.model.apply(init_weights)
+
+
+
         self.optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate)
 
         use_gpu = torch.cuda.is_available()
@@ -43,7 +65,14 @@ class ModelRunner:
         else:
             self.computing_device = torch.device('cpu')
 
-        print(self.model_name)
+        if 'loaded' in settings:
+            if not settings['loaded']:
+                print(self.model_name)
+            else:
+                print("Loaded Model")
+        else:
+            print(self.model_name)
+
         self.load_data()
 
     def load_data(self):
@@ -69,10 +98,19 @@ class ModelRunner:
         self.model.train()
 
         # log data to these variables
-        self.model.training_loss = []
-        self.model.training_acc = []
-        self.model.validation_acc = []
-        self.model.validation_loss = []
+        if 'loaded' in self.settings:
+            if not self.settings['loaded']:
+                self.model.training_loss = []
+                self.model.training_acc = []
+                self.model.validation_acc = []
+                self.model.validation_loss = []
+        else:
+            self.model.training_loss = []
+            self.model.training_acc = []
+            self.model.validation_acc = []
+            self.model.validation_loss = []
+
+      
 
         for epoch in range(self.settings['EPOCHS']):
             self.model.train()
@@ -130,7 +168,6 @@ class ModelRunner:
             print("Train epoch {}, time elapsed {}, loss {}, accuracy: {}".format(epoch, time.time() - ts, lossSum, accuracy.item()))
             print("Saving most recent model")
 
-            torch.save(self.model, '{} - Last Epoch Model for {}'.format(self.start_time,self.title))
 
             self.val(epoch)
 
@@ -159,13 +196,18 @@ class ModelRunner:
         if accuracy is None:
             accuracy = torch.tensor([0.0])
         print("Validation Epoch: {}, Loss: {}, Accuracy: {}".format(epoch, lossSum, accuracy.item()))
+  
+        self.model.validation_loss.append(lossSum)
+        self.model.validation_acc.append(accuracy.item())
+
         if self.bestValidationLoss is None or lossSum < self.bestValidationLoss:
             print("Saving best model")
             self.bestValidationLoss = lossSum
             torch.save(self.model, '{}{} - Best Model for {}'.format(self.start_time, self.settings.get('NAME', ''), self.title))
-        self.model.validation_loss.append(lossSum)
-        self.model.validation_acc.append(accuracy.item())
 
+
+        torch.save(self.model, '{} - Last Epoch Model for {}'.format(self.start_time,self.title))
+        
         self.plot(title=self.title)
         # Complete this function - Calculate loss, accuracy and IoU for every epoch
         # Make sure to include a softmax after the output from your model

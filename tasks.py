@@ -157,8 +157,28 @@ def test_vgg(title="VGG_Test"):
     runner.train()
     # runner.val()
 
+def continue_training(title, fileName, epochs, batchSize, learning_rate):
+
+    model = torch.load('./{}'.format(fileName))
+
+    settings = {
+        'APPLY_TRANSFORMATIONS': False,
+        'MODEL': model,
+        'EPOCHS': epochs,
+        'batch_size': batchSize,
+        'learning_rate': learning_rate,
+        'loaded': True,
+        'title': title
+    }
+
+    runner = ModelRunner(settings)
+    runner.load_data()
+    runner.train()
+
+    
+
 if __name__ == "__main__":
-    task = input("Which task? (2, 3.1, 3.2, 3.3, 3.4, 3.5): ")
+    task = input("Which task? (2, 3.1, 3.2, 3.3, 3.4, 3.5, 4: continue_training): ")
     title = input("Name of the graph:")
     if task == '2':
         task2(title)
@@ -175,5 +195,13 @@ if __name__ == "__main__":
         task_unet(title)
     elif task == 'test_task':
         test_task(title)
+    elif task == '4':
+        fileName = input("Name of model file to load (don't include './''): ")
+        epochs = int(input("Enter number of epochs: "))
+        batchSize = int(input("Please enter a batch size (1 for Unet, 4 for FCN): "))
+        learning_rate = float(input("Please enter a learning rate (5e-3): "))
+
+
+        continue_training(title, fileName, epochs, batchSize, learning_rate)
 
     print("Thank you, exiting program")
