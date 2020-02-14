@@ -166,7 +166,6 @@ class ModelRunner:
             print(totalImage*self.batch_size)
             print("-------------------------------------")
             print("Train epoch {}, time elapsed {}, loss {}, accuracy: {}".format(epoch, time.time() - ts, lossSum, accuracy.item()))
-            print("Saving most recent model")
 
 
             self.val(epoch)
@@ -207,6 +206,7 @@ class ModelRunner:
 
 
         torch.save(self.model, '{} - Last Epoch Model for {}'.format(self.start_time,self.title))
+        print("Saving most recent model")
         
         self.plot(title=self.title)
         # Complete this function - Calculate loss, accuracy and IoU for every epoch
