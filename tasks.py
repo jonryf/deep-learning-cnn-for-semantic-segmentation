@@ -108,7 +108,7 @@ def task_3_4(title):
     runner.load_data()
     runner.train()
     # runner.val()
-    runner.plot(title="Using VGG 11-Layer as Encoder")
+    runner.plot(title)
 
 def task_unet(title=None):
     settings = {
@@ -176,8 +176,8 @@ if __name__ == "__main__":
     elif task == '3.3':
         task_3_3(title)
     elif task == '3.4':
-        #task_3_4()
-        test_vgg(title)
+        task_3_4()
+        #test_vgg(title)
     elif task == '3.5':
         task_unet(title)
     elif task == 'test_task':
