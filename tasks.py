@@ -2,6 +2,7 @@ from runner import ModelRunner
 from basic_fcn import FCN
 from vgg11 import VGG
 from unet import UNET
+from wnet import WNET
 import torch
 import torch.nn as nn
 import sys
@@ -123,6 +124,20 @@ def task_unet(title='Unet'):
     runner.train()
     # runner.val()
 
+def task_wnet(title='Wnet'):
+    settings = {
+        'APPLY_TRANSFORMATIONS': False,
+        'MODEL': WNET,
+        'EPOCHS': 200,
+        'batch_size': 1,
+        'learning_rate': 5e-4,
+        'title': title
+    }
+    print("Training WNET on", settings['EPOCHS'], "Epochs")
+    runner = ModelRunner(settings)
+    runner.load_data()
+    runner.train()
+    # runner.val()
 
 def test_task(title="TestRun"):
     settings = {
@@ -202,8 +217,8 @@ if __name__ == "__main__":
         task2(title)
     elif task == '3.1':
         task3_1(title)
-    elif task == 3.2:
-        pass
+    elif task == '3.2':
+        task_wnet(title)
     elif task == '3.3':
         task_3_3(title)
     elif task == '3.4':
