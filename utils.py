@@ -60,30 +60,41 @@ def iou(pred, target):
 # returns - (images) = pecent
 def pixel_acc(pred, target):
 
-    classPreds = getClassFromChannels(pred) #[target != 255]
-    classTarget = target #[target != 255] #getClassFromChannels(target)
-    '''
-    excluded_classes = torch.tensor([0,1,2,3,4,5,6,9,10,14,15,16,18,29,39])
+    a = getClassFromChannels(pred) #[target != 255]
+    b = target #[target != 255] #getClassFromChannels(target)
 
-    classTarget = torch.where(classTarget not in excluded_classes, None, classTarget)
+    diff = a - b
 
-    classPreds = torch.where(classPreds not in excluded_classes, None, classPreds)
+    if torch.cuda.is_available():
+        x = torch.tensor(1).cuda()
+        y = torch.tensor(0).cuda()
+    else:
+        x = torch.tensor(1)
+        y = torch.tensor(0)
     
-    classPreds = torch.where(labels_classes[classPreds.item()][6], classPreds, None)
-
-    classTarget = torch.where(labels_classes[classPreds.item()][6], classPreds, None)
-    '''
-
-
-    diff = classPreds - classTarget
-
-
-    x = torch.tensor(1).cuda()
-    y = torch.tensor(0).cuda()
     correct = torch.where(diff == 0, x, y)
+
+
+
     s = torch.sum(correct, axis=1)
     s = torch.sum(s, axis=1)
-    return s.float() / float(pred.size()[2] * pred.size()[3])
+
+    return s.float() / float(a.size()[1] * a.size()[2])
+
+def exclusion_pixel_acc(pred, target):
+    predClass = getClassFromChannels(pred)
+    correct = 0
+    total = 0
+
+    for c in range(0, pred.size()[1]):
+        if not labels_classes[c].ignoreInEval:
+            correct += ((predClass == target) & (target == c)).sum().item()
+            total += (target == c).sum().item()
+
+    return correct / total
+
+
+
 
 
 def init_weights(model):

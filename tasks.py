@@ -175,10 +175,28 @@ def continue_training(title, fileName, epochs, batchSize, learning_rate):
     runner.load_data()
     runner.train()
 
+def test_acc(title, fileName, batchSize):
+
+    model = torch.load('./{}'.format(fileName))
+
+    settings = {
+        'APPLY_TRANSFORMATIONS': False,
+        'MODEL': model,
+        'EPOCHS': 1,
+        'batch_size': batchSize,
+        'learning_rate': 5e-3,
+        'title': title,
+        'loaded': True
+    }
+    print("Getting Accuracy for {}".format(fileName))
+    runner = ModelRunner(settings)
+    runner.load_data()
+    runner.test()
+    # runner.val()
     
 
 if __name__ == "__main__":
-    task = input("Which task? (2, 3.1, 3.2, 3.3, 3.4, 3.5, 4: continue_training): ")
+    task = input("Which task? (2, 3.1, 3.2, 3.3, 3.4, 3.5, 4: continue_training), 5: get pixel accuracy: ")
     title = input("Name of the graph:")
     if task == '2':
         task2(title)
@@ -200,8 +218,11 @@ if __name__ == "__main__":
         epochs = int(input("Enter number of epochs: "))
         batchSize = int(input("Please enter a batch size (1 for Unet, 4 for FCN): "))
         learning_rate = float(input("Please enter a learning rate (5e-3): "))
-
-
         continue_training(title, fileName, epochs, batchSize, learning_rate)
+    elif task == '5':
+        fileName = input("Name of model file to load (don't include './''): ")
+        batchSize = int(input("Enter a batch size: "))
+        test_acc(title, fileName, batchSize)
+
 
     print("Thank you, exiting program")

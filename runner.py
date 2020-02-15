@@ -82,15 +82,15 @@ class ModelRunner:
 
         self.train_loader = DataLoader(dataset=train_dataset,
                                        batch_size=self.batch_size,
-                                       num_workers=4,
+                                       num_workers=3,
                                        shuffle=True)
         self.val_loader = DataLoader(dataset=val_dataset,
                                      batch_size=self.batch_size,
-                                     num_workers=4,
+                                     num_workers=3,
                                      shuffle=True)
         self.test_loader = DataLoader(dataset=test_dataset,
                                       batch_size=self.batch_size,
-                                      num_workers=4,
+                                      num_workers=3,
                                       shuffle=True)
 
 
@@ -207,13 +207,30 @@ class ModelRunner:
 
         torch.save(self.model, '{} - Last Epoch Model for {}'.format(self.start_time,self.title))
         print("Saving most recent model")
-        
+
         self.plot(title=self.title)
         # Complete this function - Calculate loss, accuracy and IoU for every epoch
         # Make sure to include a softmax after the output from your model
 
     def test(self):
-        None
+        self.model.eval()
+        vals = self.val_loader
+        accuracySum = 0
+        totalImages = 0
+        for iter, (X, tar, Y) in enumerate(vals):
+            print(iter)
+            with torch.no_grad():
+                inputs = X.cuda()
+                labels = Y.cuda()
+    #             print(torch.cuda.memory_allocated(device=None))
+                totalImages += 1
+                outputs = self.model(inputs)
+                accuracySum += exclusion_pixel_acc(outputs, labels)
+                torch.cuda.empty_cache()
+        accuracy = accuracySum / totalImages
+        if accuracy is None:
+            accuracy = torch.tensor([0.0])
+        print("Validation Accuracy: {}".format(accuracy))
         # Complete this function - Calculate accuracy and IoU
         # Make sure to include a softmax after the output from your model
 
