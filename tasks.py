@@ -102,7 +102,7 @@ def task_3_4(title):
         'learning_rate': 5e-4,
         'title': title
     }
-    print("Training UNET on", settings['EPOCHS'], "Epochs")
+    print("Training VGG on", settings['EPOCHS'], "Epochs")
     runner = ModelRunner(settings)
     runner.load_data()
     runner.train()
