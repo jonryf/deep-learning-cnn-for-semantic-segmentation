@@ -1,3 +1,5 @@
+import random
+
 from torch.utils.data import Dataset, DataLoader# For custom data-sets
 import torchvision.transforms as transforms
 import numpy as np
@@ -5,6 +7,7 @@ from PIL import Image
 import torch
 import pandas as pd
 from collections import namedtuple
+import torchvision.transforms.functional as TF
 
 n_class    = 34
 means     = np.array([103.939, 116.779, 123.68]) / 255. # mean of three channels in the order of BGR
@@ -79,6 +82,7 @@ labels_classes = [
     Label(  'bicycle'              , 33 ,       18 , 'vehicle'         , 7       , True         , False        , (119, 11, 32) )
 ]
 
+
 class CityScapesDataset(Dataset):
 
     def __init__(self, csv_file, transform, n_class=n_class):
@@ -91,6 +95,24 @@ class CityScapesDataset(Dataset):
     def __len__(self):
         return len(self.data)
 
+    @staticmethod
+    def transform_data(image, label):
+
+        # Resize
+        resize = transforms.Resize(size=(512, 1024))
+        image = resize(image)
+        label = resize(label)
+
+
+
+        # Random horizontal flipping
+        if random.random() > 0.5:
+            image = TF.hflip(image)
+            label = TF.hflip(label)
+
+        return image, label
+
+
     def __getitem__(self, idx):
         img_name   = self.data.iloc[idx, 0]
 
@@ -99,10 +121,8 @@ class CityScapesDataset(Dataset):
         label = Image.open(label_name)
 
         # apply transformation
-        if self.transform is not None:
-            img = self.transform(img)
-            label = self.transform(label)
-
+        if self.transform:
+            img, label = self.transform_data(img, label)
 
         img = np.asarray(img)
         label = np.asarray(label)
