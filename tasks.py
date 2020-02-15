@@ -69,7 +69,7 @@ def task_3_3(title = 'task3-3'):
         'batch_size': 4,
         'EPOCHS': 10,
         'learning_rate': 5e-3,
-        'tit;e': title
+        'title': title
     }
 
     baseline_runner = ModelRunner(settings_baseline)
