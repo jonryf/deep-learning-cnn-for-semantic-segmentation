@@ -11,7 +11,7 @@ from datetime import datetime
 class ModelRunner:
     def __init__(self, settings):
         self.settings = settings
-        self.transforms = get_transformations() if settings['APPLY_TRANSFORMATIONS'] else None
+        self.transforms = settings['APPLY_TRANSFORMATIONS'] 
         self.train_loader = None
         self.val_loader = None
         self.test_loader = None

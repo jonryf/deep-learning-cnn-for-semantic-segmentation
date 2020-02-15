@@ -108,17 +108,6 @@ def init_weights_transfer(model):
         nn.init.xavier_uniform_(model.weight.data)
         nn.init.zeros_(model.bias.data)
 
-def get_transformations():
-    """
-    Compose a set of transformations
-
-    :return: transformations
-    """
-    return transforms.Compose([
-            transforms.ColorJitter(),
-            transforms.RandomCrop((512, 1024)),
-            transforms.RandomRotation(10),
-            transforms.RandomHorizontalFlip()])
 
 
 def graph_plot(data, labels, legends, time, title="", show=True):
