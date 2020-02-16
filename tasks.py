@@ -28,7 +28,7 @@ def task3_1(title="model with transformations"):
     settings_baseline = {
         'APPLY_TRANSFORMATIONS': False,
         'MODEL': FCN,
-        'EPOCHS': 10,
+        'EPOCHS': 50,
         'batch_size': 4,
         'LOAD_FROM_PATH': 'baseline_model.model',
         'learning_rate': 5e-3
@@ -38,7 +38,7 @@ def task3_1(title="model with transformations"):
         'APPLY_TRANSFORMATIONS': True,
         'MODEL': FCN,
         'batch_size': 4,
-        'EPOCHS': 10,
+        'EPOCHS': 50,
         'learning_rate': 5e-3,
         'title': title
     }
@@ -68,7 +68,7 @@ def task_3_3(title = 'task3-3'):
         'APPLY_TRANSFORMATIONS': True,
         'MODEL': FCN,
         'batch_size': 4,
-        'EPOCHS': 10,
+        'EPOCHS': 50,
         'learning_rate': 5e-3,
         'title': title
     }
@@ -128,7 +128,7 @@ def task_wnet(title='Wnet'):
     settings = {
         'APPLY_TRANSFORMATIONS': False,
         'MODEL': WNET,
-        'EPOCHS': 200,
+        'EPOCHS': 100,
         'batch_size': 1,
         'learning_rate': 5e-4,
         'title': title

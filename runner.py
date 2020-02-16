@@ -181,6 +181,11 @@ class ModelRunner:
                 if iter * self.batch_size > self.settings['imagesPerEpoch']:
                     break
             with torch.no_grad():
+
+                if('imagesPerEpoch' in self.settings):
+                    if iter*self.batch_size > self.settings['imagesPerEpoch']:
+                        break
+
                 inputs = X.cuda()
                 labels = Y.cuda()
     #             print(torch.cuda.memory_allocated(device=None))
