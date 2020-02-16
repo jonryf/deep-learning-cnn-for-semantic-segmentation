@@ -25,7 +25,7 @@ $ scp -r ./  apolus@ieng6.ucsd.edu:/home/linux/ieng6/cs253wi20/apolus/code
 
 Copy from cluster to pod:
 $ kubectl cp ./ <username>-<pod number>:/tmp/code
-$ kubectl cp ./ apolus-7825:/tmp/code
+$ kubectl cp ./ apolus-24635:/tmp/code
 
 
 Run tasks from pod:
