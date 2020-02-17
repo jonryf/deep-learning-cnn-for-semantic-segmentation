@@ -229,10 +229,27 @@ def test_IoU(title, fileName, batchSize):
     runner.load_data()
     runner.test_iou()
     # runner.val()
+
+def visualization(title, fileName):
+
+    model = torch.load('./{}'.format(fileName))
+
+    settings = {
+        'APPLY_TRANSFORMATIONS': False,
+        'MODEL': model,
+        'EPOCHS': 1,
+        'batch_size': 1,
+        'learning_rate': 5e-3,
+        'title': title,
+        'loaded': True
+    }
+    runner = ModelRunner(settings)
+    runner.load_data()
+    runner.visualization()
     
 
 if __name__ == "__main__":
-    task = input("Which task? (2, 3.1, 3.2, 3.3, 3.4, 3.5, 4: continue_training), 5: get pixel accuracy, 6: get IoU: ")
+    task = input("Which task? (2, 3.1, 3.2, 3.3, 3.4, 3.5, 4: continue_training), 5: get pixel accuracy, 6: get IoU, 7: Visualization: ")
     title = input("Name of the graph:")
     if task == '2':
         task2(title)
@@ -263,6 +280,10 @@ if __name__ == "__main__":
         fileName = input("Name of model file to load (don't include './''): ")
         batchSize = int(input("Enter a batch size: "))
         test_IoU(title, fileName, batchSize)
+    elif task == '7':
+        fileName = input("Name of model file to load (don't include './''): ")
+        visualization(title, fileName)
+
 
 
     print("Thank you, exiting program")

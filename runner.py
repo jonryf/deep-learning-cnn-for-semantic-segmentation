@@ -89,9 +89,9 @@ class ModelRunner:
                                      num_workers=3,
                                      shuffle=True)
         self.test_loader = DataLoader(dataset=test_dataset,
-                                      batch_size=self.batch_size,
+                                      batch_size=1,
                                       num_workers=3,
-                                      shuffle=True)
+                                      shuffle=False)
 
 
     def train(self):
@@ -271,7 +271,59 @@ class ModelRunner:
                 print("{} Acc: {}".format(labels_classes[i].name, IoU[c]))
                 c+=1
         print(torch.sum(IoU, dim=0)/IoU.size()[0])
+    
+    def visualization(self):
+        self.model.eval()
+        test = self.test_loader
+        for iter, (X, tar, Y) in enumerate(test):
+            with torch.no_grad():
+                '''
+                inputs = X.cuda()
 
+                greyscale = torch.mean(inputs, dim=1).cpu()
+                greyscale = greyscale[0,:,:]
+
+                plt.figure()
+                plt.imshow(greyscale, cmap="binary")
+
+                output = self.model(inputs)
+
+                outputClasses = getClassFromChannels(output).cpu()
+                outputClasses = outputClasses[0, :, :]
+                plt.imshow(outputClasses, alpha = 0.5, cmap='Set1')
+                plt.colorbar()
+                plt.savefig('%s Visualization' %self.title)
+                '''
+                
+                inputs = X.cuda()
+
+                greyscale = inputs.cpu()
+                greyscale = greyscale[0,:,:]
+
+                greyscale = transforms.ToPILImage()(greyscale)
+
+                output = self.model(inputs)
+                outputClasses = getClassFromChannels(output).cpu()
+                outputClasses = outputClasses[0, :, :]
+
+
+                seg = torch.zeros([4,inputs.size()[2], inputs.size()[3]])
+
+                for i in range(0, inputs.size()[2]):
+                    for j in range(0, inputs.size()[3]):
+                        seg[0][i][j] = labels_classes[outputClasses[i][j]].color[0]
+                        seg[1][i][j] = labels_classes[outputClasses[i][j]].color[1]
+                        seg[2][i][j] = labels_classes[outputClasses[i][j]].color[2]
+                        seg[3][i][j] = 0.5
+                segImage = transforms.ToPILImage()(seg)
+
+                greyscale.paste(segImage, (0,0), segImage)
+                greyscale.save("Vis.png")
+
+
+
+            if iter > 0:
+                break
 
     def plot(self, compare_to=None, names=None, title=None):
         if compare_to is None:
