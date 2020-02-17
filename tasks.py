@@ -54,6 +54,7 @@ def task3_1(title="model with transformations"):
 
 
 def task_3_3(title = 'task3-3'):
+    '''
     settings_baseline = {
         'APPLY_TRANSFORMATIONS': False,
         'MODEL': FCN,
@@ -62,10 +63,11 @@ def task_3_3(title = 'task3-3'):
         'LOAD_FROM_PATH': 'baseline_model.model',
         'learning_rate': 5e-3
     }
+    '''
 
     settings_task3_1 = {
         'NAME': 'task 3-1',
-        'APPLY_TRANSFORMATIONS': True,
+        'APPLY_TRANSFORMATIONS': False,
         'MODEL': FCN,
         'batch_size': 4,
         'EPOCHS': 50,
@@ -73,7 +75,7 @@ def task_3_3(title = 'task3-3'):
         'title': title
     }
 
-    baseline_runner = ModelRunner(settings_baseline)
+    # baseline_runner = ModelRunner(settings_baseline)
     runner = ModelRunner(settings_task3_1)
 
     weights = [[1.030186615981065], [0.9830729949422731], [1.016867434679172], [1.0147616646506572],
@@ -208,10 +210,29 @@ def test_acc(title, fileName, batchSize):
     runner.load_data()
     runner.test()
     # runner.val()
+
+def test_IoU(title, fileName, batchSize):
+
+    model = torch.load('./{}'.format(fileName))
+
+    settings = {
+        'APPLY_TRANSFORMATIONS': False,
+        'MODEL': model,
+        'EPOCHS': 1,
+        'batch_size': batchSize,
+        'learning_rate': 5e-3,
+        'title': title,
+        'loaded': True
+    }
+    print("Getting IoU for {}".format(fileName))
+    runner = ModelRunner(settings)
+    runner.load_data()
+    runner.test_iou()
+    # runner.val()
     
 
 if __name__ == "__main__":
-    task = input("Which task? (2, 3.1, 3.2, 3.3, 3.4, 3.5, 4: continue_training), 5: get pixel accuracy: ")
+    task = input("Which task? (2, 3.1, 3.2, 3.3, 3.4, 3.5, 4: continue_training), 5: get pixel accuracy, 6: get IoU: ")
     title = input("Name of the graph:")
     if task == '2':
         task2(title)
@@ -238,6 +259,10 @@ if __name__ == "__main__":
         fileName = input("Name of model file to load (don't include './''): ")
         batchSize = int(input("Enter a batch size: "))
         test_acc(title, fileName, batchSize)
+    elif task == '6':
+        fileName = input("Name of model file to load (don't include './''): ")
+        batchSize = int(input("Enter a batch size: "))
+        test_IoU(title, fileName, batchSize)
 
 
     print("Thank you, exiting program")

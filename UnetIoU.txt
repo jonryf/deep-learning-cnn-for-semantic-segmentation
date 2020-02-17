@@ -1,0 +1,23 @@
+Which task? (2, 3.1, 3.2, 3.3, 3.4, 3.5, 4: continue_training), 5: get pixel accuracy, 6: get IoU: Name of the graph:Name of model file to load (don't include './''): Enter a batch size: Getting IoU for 2020-02-16 11:38:23.087644 - Best Model for UNetFullRunContinue6
+Loaded Model
+road Acc: 0.869040846824646
+sidewalk Acc: 0.48218733072280884
+building Acc: 0.6934908032417297
+wall Acc: 0.04760584235191345
+fence Acc: 0.055184945464134216
+pole Acc: 0.314067542552948
+traffic light Acc: 0.1799614578485489
+traffic sign Acc: 0.39569389820098877
+vegetation Acc: 0.8100089430809021
+terrain Acc: 0.15071554481983185
+sky Acc: 0.7237623333930969
+person Acc: 0.2795342803001404
+rider Acc: 0.013501370325684547
+car Acc: 0.6042582988739014
+truck Acc: 0.003995339851826429
+bus Acc: 0.005059702321887016
+train Acc: 0.0007629297906532884
+motorcycle Acc: 0.00835367664694786
+bicycle Acc: 0.2409026175737381
+tensor(0.3094)
+Thank you, exiting program

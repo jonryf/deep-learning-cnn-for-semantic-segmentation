@@ -239,6 +239,40 @@ class ModelRunner:
         # Complete this function - Calculate accuracy and IoU
         # Make sure to include a softmax after the output from your model
 
+    def test_iou(self):
+        self.model.eval()
+        vals = self.val_loader
+        IoU = 0
+        totalImages = 0
+        for iter, (X, tar, Y) in enumerate(vals):
+            if 'imagesPerEpoch' in self.settings:
+                if iter * self.batch_size > self.settings['imagesPerEpoch']:
+                    break
+            with torch.no_grad():
+                if('imagesPerEpoch' in self.settings):
+                    if iter*self.batch_size > self.settings['imagesPerEpoch']:
+                        break
+
+                inputs = X.cuda()
+                labels = Y.cuda()
+                #targets = tar.cuda()
+
+                totalImages += 1
+
+                outputs = self.model(inputs)
+
+                IoU += better_IoU(outputs, labels)
+
+                torch.cuda.empty_cache()
+        IoU = IoU / totalImages
+        c = 0
+        for i in range(0, len(labels_classes)):
+            if not labels_classes[i].ignoreInEval:
+                print("{} Acc: {}".format(labels_classes[i].name, IoU[c]))
+                c+=1
+        print(torch.sum(IoU, dim=0)/IoU.size()[0])
+
+
     def plot(self, compare_to=None, names=None, title=None):
         if compare_to is None:
             plot(self.model, title=title, time=self.start_time)

@@ -5,6 +5,7 @@ import torchvision.transforms as transforms
 import numpy as np
 from PIL import Image
 import torch
+import math
 import pandas as pd
 from collections import namedtuple
 import torchvision.transforms.functional as TF
@@ -99,14 +100,24 @@ class CityScapesDataset(Dataset):
     def transform_data(image, label):
 
         # Resize
-        resize = transforms.Resize(size=(512, 1024))
-        image = resize(image)
-        label = resize(label)
+        '''
+        if random.random() > 0.9:
+            height = math.floor(random.uniform(0.9, 1.0) * 1023)
+            width = math.floor(random.uniform(0.9,1.0) * 2047)
+            top = random.random() * (1023 - height)
+            left = random.random() * (2047 - width)
+            image = TF.crop(image, top, left, height, width)
+            label = TF.crop(label, top, left, height, width)
+        '''
+        angles = [-30, -15, 0, 15, 30]
 
-
+        if random.random() > 0.9:
+            angle = random.choice(angles)
+            image = TF.rotate(image, angle)
+            label = TF.rotate(label, angle)
 
         # Random horizontal flipping
-        if random.random() > 0.5:
+        if random.random() > 0.9:
             image = TF.hflip(image)
             label = TF.hflip(label)
 

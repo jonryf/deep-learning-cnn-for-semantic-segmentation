@@ -11,13 +11,14 @@ from dataloader import labels_classes
 
 #size (images, features, height, width)
 def getOneHotPredictionsFromProbabilites(preds):
-    ret = torch.zeros(preds.size())
+    ret = torch.zeros(preds.size()).cuda()
     maxPreds = torch.argmax(preds, axis=1) # dimmensinos (images, height, width) = feature prediction
-    for imageIdx in maxPreds.size()[0]:
-        for heightIdx in maxPreds.size()[1]:
-            for widthIdx in maxPreds.size()[2]:
+    for imageIdx in range(0,maxPreds.size()[0]):
+        for heightIdx in range(0,maxPreds.size()[1]):
+            for widthIdx in range(0,maxPreds.size()[2]):
                 ret[imageIdx, maxPreds[imageIdx, heightIdx, widthIdx], heightIdx, widthIdx] = 1
     return ret
+
 
 
 
@@ -39,6 +40,7 @@ def iou(pred, target):
     #         # Append the calculated IoU to the list ious
     # return ious
     oneHotPReds = getOneHotPredictionsFromProbabilites(pred)
+
 
     # numerator
     classTp = oneHotPReds * target # get intersection
@@ -93,6 +95,26 @@ def exclusion_pixel_acc(pred, target):
 
     return correct / total
 
+def better_IoU(pred, target):
+    predClass = getClassFromChannels(pred)
+    IoU = torch.tensor([])
+
+    for c in range(0, pred.size()[1]):
+        if not labels_classes[c].ignoreInEval:
+            GT = (target == c)
+            TP = ((predClass == target) & GT).sum().item()
+            FP = ((predClass == c) & (predClass != target)).sum().item()
+            FN = (GT & (predClass != target)).sum().item()
+            #IoU.append(TP / (TP + FP + FN))
+            denom = TP + FP + FN
+            num = TP
+            val = 0
+            if  denom == 0:
+                val = 0
+            else:
+                val = num / denom
+            IoU = torch.cat((IoU, torch.tensor([float(val)])))
+    return IoU
 
 
 
