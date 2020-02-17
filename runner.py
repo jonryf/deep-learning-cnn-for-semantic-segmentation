@@ -219,7 +219,7 @@ class ModelRunner:
 
     def test(self):
         self.model.eval()
-        vals = self.val_loader
+        vals = self.test_loader
         accuracySum = 0
         totalImages = 0
         for iter, (X, tar, Y) in enumerate(vals):
